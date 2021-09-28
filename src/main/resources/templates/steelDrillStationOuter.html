@@ -1,0 +1,103 @@
+<!doctype html>
+<meta charset="utf-8">
+<!--meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"--><!--use edge and chorme frame-->
+<!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+<link href="/css/styleall.css"  rel="stylesheet" type="text/css" media="all" />
+<title>Document</title>
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<body style="scrolling: yes;">
+<div id="wbox" style="height:100%;height:100%;">
+    <div class="time" style="height:2.56vh;width:2.56vh;margin-top:4vh;margin-left:76.5%;margin-bottom:0%;"><h2 id="time" style="text-align: center; font-size: 1.2rem;padding-left: 140%;">2021/05/21</h2></div>
+    <iframe src="/index/steelDrillStationInner" style="width:90%;height:80%;margin-left:5%;margin-top:1.8%;border: none;"></iframe>
+</div>
+</body>
+<script type="text/javascript">
+    function Format(now,mask)
+    {
+        var d = now;
+        var zeroize = function (value, length)
+        {
+            if (!length) length = 2;
+            value = String(value);
+            for (var i = 0, zeros = ''; i < (length - value.length); i++)
+            {
+                zeros += '0';
+            }
+            return zeros + value;
+        };
+
+        return mask.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|m{1,4}|yy(?:yy)?|([hHMstT])\1?|[lLZ])\b/g, function ($0)
+        {
+            switch ($0)
+            {
+                case 'd': return d.getDate();
+                case 'dd': return zeroize(d.getDate());
+                case 'ddd': return ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat'][d.getDay()];
+                case 'dddd': return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()];
+                case 'M': return d.getMonth() + 1;
+                case 'MM': return zeroize(d.getMonth() + 1);
+                case 'MMM': return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+                case 'MMMM': return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()];
+                case 'yy': return String(d.getFullYear()).substr(2);
+                case 'yyyy': return d.getFullYear();
+                case 'h': return d.getHours() % 12 || 12;
+                case 'hh': return zeroize(d.getHours() % 12 || 12);
+                case 'H': return d.getHours();
+                case 'HH': return zeroize(d.getHours());
+                case 'm': return d.getMinutes();
+                case 'mm': return zeroize(d.getMinutes());
+                case 's': return d.getSeconds();
+                case 'ss': return zeroize(d.getSeconds());
+                case 'l': return zeroize(d.getMilliseconds(), 3);
+                case 'L': var m = d.getMilliseconds();
+                    if (m > 99) m = Math.round(m / 10);
+                    return zeroize(m);
+                case 'tt': return d.getHours() < 12 ? 'am' : 'pm';
+                case 'TT': return d.getHours() < 12 ? 'AM' : 'PM';
+                case 'Z': return d.toUTCString().match(/[A-Z]+$/);
+                // Return quoted strings with the surrounding quotes removed
+                default: return $0.substr(1, $0.length - 2);
+            }
+        });
+    };
+    function changeTime() {
+        var time = document.getElementById("time");
+        var date = new Date();
+        time.innerText = Format(date, "yyyy/MM/dd");
+    }
+    document.ready=changeTime();
+    setInterval(changeTime,10000);
+
+</script>
+<script>
+    //随着窗口的大小来调整字体的大小
+    function resizeFont() {
+        //获取屏幕宽度
+        let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+        let clientHeight = document.getElementById("wbox").clientHeight;
+        console.log(document.documentElement.clientWidth);
+        console.log(document.documentElement.clientHeight);
+        //设计图参考宽度
+        let designW = 1920,designH = 943;
+        //console.log(Math.min(parseFloat(clientWidth / designW * 10), parseFloat(clientHeight / designH * 10)));
+        document.getElementsByTagName('html').item(0).style.fontSize = Math.min(Math.trunc(parseInt(clientWidth) / designW * 12), Math.trunc(parseInt(clientHeight) / designH * 12)).toString() + 'px';
+    }
+    resizeFont();
+    /* window.onresize = function () {
+         resizeFont();
+     }*/
+    var width= document.documentElement.clientWidth, height=document.documentElement.clientHeight;
+    console.log(width);
+    console.log(height);
+
+    $("html body").css("min-width",width+"px");
+    $("html body").css("max-width","100%");
+    $("html body").css("min-height",height+"px");
+    $("html body").css("max-height","100%");
+    $("html body").css("overflow-x","auto");
+    $("html body").css("overflow-y","auto");
+
+
+
+</script>
+</html>
