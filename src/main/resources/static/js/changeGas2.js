@@ -878,7 +878,7 @@ function changeData(data) {
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S07Data",
+        url:"/data/S09Data",
         type:"GET",
         success:(result)=>{
             changeData(result);
@@ -888,7 +888,7 @@ setInterval(function(){
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S07Data",
+        url:"/data/S09Data",
         type:"GET",
         success:(result)=>{
             changeHearts(result);
