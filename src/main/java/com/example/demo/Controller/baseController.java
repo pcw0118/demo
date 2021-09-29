@@ -58,6 +58,11 @@ public class baseController {
         return "gasshieldedweldingOuter";
     }
 
+    @GetMapping("/gasshieldedweldingInner2")
+    public String togasshieldedweldingInner2(HttpServletRequest request) {
+        return "gasshieldedweldingInner2";
+    }
+
     @GetMapping("/arcweldingStation")
     public String toArcwelding(HttpServletRequest request) {  return "arcweldingOuter"; }
 
