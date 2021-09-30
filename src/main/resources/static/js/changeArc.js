@@ -497,7 +497,7 @@ data1=[];
 //lineOfSteel.setOption(optionTemplete1);
 var startHour = 0;
 
-function updateLineData(data1,data2){
+function updateLineData(data2){
     var cur = new Date();
     if(cur.getHours()==0&&cur.getMinutes()==0&&cur.getSeconds()==0){
         maxValue1 = 200;
@@ -506,13 +506,7 @@ function updateLineData(data1,data2){
     }
     if(startHour == 0){
         minValue = 0;
-        maxValue1 = Math.max(maxValue1,data1[data1.length-1]);
         maxValue2 = Math.max(maxValue2, data2[data2.length-1]);
-
-        optionTemplete.series[0].data = data1;
-        optionTemplete.yAxis.min = minValue;
-        optionTemplete.yAxis.max = maxValue1;
-        optionTemplete.yAxis.axisLabel.interval = (maxValue1-minValue)/5;
 
         optionTemplete1.series[0].data = data2;
         optionTemplete1.yAxis.min = minValue;
@@ -531,13 +525,7 @@ function updateLineData(data1,data2){
         data1.push(ret);*/
 
         minValue = 0;
-        maxValue1 = Math.max(maxValue1,data1[data1.length-1]);
         maxValue2 = Math.max(maxValue2, data2[data2.length-1]);
-
-        optionTemplete.series[0].data = data1;
-        optionTemplete.yAxis.min = minValue;
-        optionTemplete.yAxis.max = maxValue1;
-        optionTemplete.yAxis.axisLabel.interval = (maxValue1-minValue)/5;
 
         optionTemplete1.series[0].data = data2;
         optionTemplete1.yAxis.min = minValue;
@@ -821,7 +809,7 @@ function changeData(data) {
     //usefulPower.innerText=parseFloat(data.usefulPower).toPrecision(5);
     //currentElectricEnergy.innerText=parseFloat(data.currentElectricEnergy).toPrecision(5);
 
-    updateLineData(data.hourlyGasData,data.hourlyWireData);
+    updateLineData(data.hourlyWireData);
     updateCurrentData(data.eleEnergy);
 
     var status=parseInt(data.runStatus);
