@@ -46,6 +46,13 @@ public class scheduleWork {
     private static Long S10PreHeartBeat = 0L;
     private static Integer S10preStatus = -1;
 
+    private static Long S12StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
+    private static Long S12ProcessingTime = 0L;//当日加工时间
+    private static Double S12weldWirePreDay = 0.0;//焊丝
+    private static Double S12weldWire = 0.0;//焊丝
+    private static Long S12PreHeartBeat = 0L;
+    private static Integer S12preStatus = -1;
+
     private static Integer S14preStatus = -1;
 
     private static Long S15HeartBeat = 0L;
@@ -108,6 +115,18 @@ public class scheduleWork {
             redisService.rpop("S10HourWireData");
         }
         //------------------------------------------------------
+        //S12---------------------------------------------------
+        str=redisService.lindex("S12",0);
+        //System.out.println(str);
+        array = str.split("\\|");
+        S12StartUpTime = 0L;
+        S12ProcessingTime = 0L;
+        S12weldWirePreDay = Double.parseDouble(array[21]);
+        len = redisService.llen("S12HourWireData");
+        while((len--)>0){
+            redisService.rpop("S12HourWireData");
+        }
+        //------------------------------------------------------
     }
 
     @Scheduled(cron = "0 0 */1 * * ?")//每小时
@@ -139,6 +158,12 @@ public class scheduleWork {
         S10weldWire = Double.parseDouble(array[21]) - S10weldWirePreDay;
         redisService.rpush("S10HourWireData",S10weldWire.toString());
         //-------------------------------------------------------------------
+        //S12------------------------------------------------------------------
+        str=redisService.lindex("S12",0);
+        array = str.split("\\|");
+        S12weldWire = Double.parseDouble(array[21]) - S12weldWirePreDay;
+        redisService.rpush("S12HourWireData",S12weldWire.toString());
+        //---------------------------------------------------------------------
     }
 
 
@@ -238,6 +263,38 @@ public class scheduleWork {
         S10weldWire = Double.parseDouble(array[21]) - S10weldWirePreDay;
         //System.out.println(weldWire);
         redisService.set("S10WeldWire",S10weldWire.toString());
+    }
+
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS12Data(){
+        //System.out.println("S07");
+        String str=redisService.lindex("S12",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S12PreStatus");
+        if(!S12preStatus.equals(Integer.parseInt(array[5]))) {
+            while (len >= 20) {
+                redisService.rpop("S12PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S12sPreStatus", array[5] + "|" + formatter.format(new Date()));
+            S12preStatus = Integer.parseInt(array[5]);
+        }
+        if("1".equals(array[0])){//开机中
+            S12StartUpTime = S12StartUpTime + 1;
+            redisService.set("S12StartUpTime",S12StartUpTime.toString());
+        }
+        if("1".equals(array[3])){//工作中
+            S12ProcessingTime = S12ProcessingTime + 1;
+            redisService.set("S12ProcessingTime",S12ProcessingTime.toString());
+        }
+        S12weldWire = Double.parseDouble(array[21]) - S12weldWirePreDay;
+        //System.out.println(weldWire);
+        redisService.set("S12WeldWire",S12weldWire.toString());
     }
 
     @Scheduled(cron = "*/1 * * * * ?")
