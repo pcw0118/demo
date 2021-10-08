@@ -72,6 +72,9 @@ public class baseController {
     @GetMapping("/arcweldingInner2")
     public String toArcweldingInner2(HttpServletRequest request) { return "arcweldingInner2"; }
 
+    @GetMapping("/cacheInner")
+    public String toCacheInner(HttpServletRequest request) { return "cacheInner"; }
+
 
     @GetMapping("/turnovestation")
     public String toturnovestationOuterPage(HttpServletRequest request) {return "turnovestationOuter";}

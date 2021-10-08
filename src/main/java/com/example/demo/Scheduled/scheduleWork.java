@@ -21,6 +21,13 @@ public class scheduleWork {
     String timeFormat="yyyy-MM-dd HH:mm:ss";
     SimpleDateFormat formatter=new SimpleDateFormat(timeFormat);
 
+    private static Long S06StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
+    private static Long S06ProcessingTime = 0L;//当日加工时间
+    private static Long S06PreHeartBeat = 0L;
+    private static Integer S06preStatus = -1;
+
+
+
     private static Long S07StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
     private static Long S07ProcessingTime = 0L;//当日加工时间
     private static Double S07weldGasPreDay = 0.0;//焊接气体
@@ -69,10 +76,17 @@ public class scheduleWork {
     // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
     public void dailyDataReset(){//清零任务
         // System.out.println("S15");
-        //S07-----------------------------------------------
-        String str=redisService.lindex("S07",0);
+        //S06-----------------------------------------------
+        String str=redisService.lindex("S06",0);
         //System.out.println(str);
         String[] array = str.split("\\|");
+        S06StartUpTime = 0L;
+        S06ProcessingTime = 0L;
+        //--------------------------------------------------
+        //S07-----------------------------------------------
+        str=redisService.lindex("S07",0);
+        //System.out.println(str);
+        array = str.split("\\|");
         S07StartUpTime = 0L;
         S07ProcessingTime = 0L;
         S07weldGasPreDay = Double.parseDouble(array[21]);
@@ -167,6 +181,31 @@ public class scheduleWork {
     }
 
 
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS06Data(){
+        String str=redisService.lindex("S06",0);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S06PreStatus");
+        if(!S06preStatus.equals(Integer.parseInt(array[5]))) {
+            while (len >= 20) {
+                redisService.rpop("S06PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S06PreStatus", array[5] + "|" + formatter.format(new Date()));
+            S06preStatus = Integer.parseInt(array[5]);
+        }
+        if("1".equals(array[0])){//开机中
+            S06StartUpTime = S06StartUpTime + 1;
+            redisService.set("S06StartUpTime",S06StartUpTime.toString());
+        }
+        if("1".equals(array[3])){//工作中
+            S06ProcessingTime = S06ProcessingTime + 1;
+            redisService.set("S06ProcessingTime",S06ProcessingTime.toString());
+        }
+    }
 
     @Scheduled(cron = "*/1 * * * * ?")
     // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
