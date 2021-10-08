@@ -75,6 +75,15 @@ public class baseController {
     @GetMapping("/cacheInner")
     public String toCacheInner(HttpServletRequest request) { return "cacheInner"; }
 
+
+    @GetMapping("/turnovestation")
+    public String toturnovestationOuterPage(HttpServletRequest request) {return "turnovestationOuter";}
+
+    @GetMapping("/turnovestationInner")
+    public String toturnovestationInnerPage(HttpServletRequest request) {return "turnovestationInner";}
+
+
+
     @GetMapping("/data")
     @ResponseBody
     public data toData(HttpServletRequest request) {
