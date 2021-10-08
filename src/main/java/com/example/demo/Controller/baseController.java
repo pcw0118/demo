@@ -80,6 +80,12 @@ public class baseController {
     public String toturnovestationInnerPage(HttpServletRequest request) {return "turnovestationInner";}
 
 
+    @GetMapping("/loadingstation")
+    public String toloadingstationOuterPage(HttpServletRequest request) {return "loadingstationOuter";}
+
+    @GetMapping("/loadingstationInner")
+    public String toloadingstationInnerPage(HttpServletRequest request) {return "loadingstationInner";}
+
 
     @GetMapping("/data")
     @ResponseBody
