@@ -72,6 +72,15 @@ public class baseController {
     @GetMapping("/arcweldingInner2")
     public String toArcweldingInner2(HttpServletRequest request) { return "arcweldingInner2"; }
 
+
+    @GetMapping("/turnovestation")
+    public String toturnovestationOuterPage(HttpServletRequest request) {return "turnovestationOuter";}
+
+    @GetMapping("/turnovestationInner")
+    public String toturnovestationInnerPage(HttpServletRequest request) {return "turnovestationInner";}
+
+
+
     @GetMapping("/data")
     @ResponseBody
     public data toData(HttpServletRequest request) {
