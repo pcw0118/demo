@@ -83,11 +83,11 @@ public class baseController {
     public String toturnovestationInnerPage(HttpServletRequest request) {return "turnovestationInner";}
 
 
-    @GetMapping("/loadingstation")
-    public String toloadingstationOuterPage(HttpServletRequest request) {return "loadingstationOuter";}
+    @GetMapping("/assemblystation")
+    public String toassemblystationOuterPage(HttpServletRequest request) {return "assemblystationOuter";}
 
-    @GetMapping("/loadingstationInner")
-    public String toloadingstationInnerPage(HttpServletRequest request) {return "loadingstationInner";}
+    @GetMapping("/assemblystationInner")
+    public String toassemblystationInnerPage(HttpServletRequest request) {return "assemblystationInner";}
 
 
     @GetMapping("/data")
