@@ -20,6 +20,57 @@ public class dataController {
     private RedisService redisService;
 
 
+    @GetMapping("/S04Data")
+    @ResponseBody
+    public S04Data toS04Data(HttpServletRequest request) {
+        //long l=redisService.llen("S14");
+        //System.out.println("S17 start");
+        S04Data res=new S04Data();
+        String str=redisService.lindex("S04",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        List<String> ret = redisService.lrange("S04PreStatus",0,19);
+        res.setPreStatus(ret);
+
+        String startTime = redisService.get("S04StartUpTime");
+        res.setStartUpTime(Long.parseLong(startTime));
+
+        String processingTime = redisService.get("S04ProcessingTime");
+        res.setProcessingTime(Long.parseLong(processingTime));
+
+        res.setCommStatus(Boolean.parseBoolean((array[0]=="0"?"true":"false")));
+        res.setDeviceStart(Boolean.parseBoolean((array[1]=="0"?"true":"false")));
+        res.setDeviceStop(Boolean.parseBoolean((array[2]=="0"?"true":"false")));
+        res.setDeviceWork(Boolean.parseBoolean((array[3]=="0"?"true":"false")));
+        res.setDeviceFault(Boolean.parseBoolean((array[4]=="0"?"true":"false")));
+        res.setRunStatus(Integer.parseInt(array[5]));
+        res.setFaultCode1(Long.parseLong(array[6]));
+        res.setFaultCode2(Long.parseLong(array[7]));
+        res.setFaultCode3(Long.parseLong(array[8]));
+        res.setFaultCode4(Long.parseLong(array[9]));
+        res.setDeviceCode(array[10]);
+        res.setWebWidth(Double.parseDouble(array[11]));
+        res.setWebThick(Double.parseDouble(array[12]));
+        res.setWebLength(Double.parseDouble(array[13]));
+        res.setFlangWidth(Double.parseDouble(array[14]));
+        res.setFlangThick(Double.parseDouble(array[15]));
+        res.setFlangLength(Double.parseDouble(array[16]));
+        res.setOutput(Double.parseDouble(array[17]));
+        res.settTakt(Double.parseDouble(array[18]));
+        res.setRealTakt(Double.parseDouble(array[19]));
+        res.setEleEnergy(Double.parseDouble(array[20]));
+
+
+
+
+        //System.out.println("S17 end");
+        return res;
+
+    }
+
+
+
     @GetMapping("/S06Data")
     @ResponseBody
     public S06Data toS06Data(HttpServletRequest request) {

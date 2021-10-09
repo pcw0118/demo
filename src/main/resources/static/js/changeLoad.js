@@ -861,7 +861,7 @@ function changeData(data) {
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S11Data",
+        url:"/data/S04Data",
         type:"GET",
         success:(result)=>{
             changeData(result);
@@ -871,7 +871,7 @@ setInterval(function(){
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S11Data",
+        url:"/data/S04Data",
         type:"GET",
         success:(result)=>{
             changeHearts(result);

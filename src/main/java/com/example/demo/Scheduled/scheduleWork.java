@@ -21,6 +21,11 @@ public class scheduleWork {
     String timeFormat="yyyy-MM-dd HH:mm:ss";
     SimpleDateFormat formatter=new SimpleDateFormat(timeFormat);
 
+    private static Long S04StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
+    private static Long S04ProcessingTime = 0L;//当日加工时间
+    private static Long S04PreHeartBeat = 0L;
+    private static Integer S04preStatus = -1;
+
     private static Long S06StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
     private static Long S06ProcessingTime = 0L;//当日加工时间
     private static Long S06PreHeartBeat = 0L;
@@ -86,10 +91,17 @@ public class scheduleWork {
     // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
     public void dailyDataReset(){//清零任务
         // System.out.println("S15");
-        //S06-----------------------------------------------
-        String str=redisService.lindex("S06",0);
+        //S04-----------------------------------------------
+        String str=redisService.lindex("S04",0);
         //System.out.println(str);
         String[] array = str.split("\\|");
+        S04StartUpTime = 0L;
+        S04ProcessingTime = 0L;
+        //--------------------------------------------------
+        //S06-----------------------------------------------
+        str=redisService.lindex("S06",0);
+        //System.out.println(str);
+        array = str.split("\\|");
         S06StartUpTime = 0L;
         S06ProcessingTime = 0L;
         //--------------------------------------------------
@@ -202,6 +214,33 @@ public class scheduleWork {
         S12weldWire = Double.parseDouble(array[21]) - S12weldWirePreDay;
         redisService.rpush("S12HourWireData",S12weldWire.toString());
         //---------------------------------------------------------------------
+    }
+
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS04Data(){
+        String str=redisService.lindex("S04",0);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S04PreStatus");
+        if(!S04preStatus.equals(Integer.parseInt(array[5]))) {
+            while (len >= 20) {
+                redisService.rpop("S04PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S04PreStatus", array[5] + "|" + formatter.format(new Date()));
+            S04preStatus = Integer.parseInt(array[5]);
+        }
+        if("1".equals(array[0])){//开机中
+            S04StartUpTime = S04StartUpTime + 1;
+            redisService.set("S04StartUpTime",S04StartUpTime.toString());
+        }
+        if("1".equals(array[3])){//工作中
+            S04ProcessingTime = S04ProcessingTime + 1;
+            redisService.set("S04ProcessingTime",S04ProcessingTime.toString());
+        }
     }
 
 
