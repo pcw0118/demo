@@ -507,6 +507,56 @@ public class dataController {
 
     }
 
+
+    @GetMapping("/S13Data")
+    @ResponseBody
+    public S13Data toS13Data(HttpServletRequest request) {
+        //long l=redisService.llen("S14");
+        //System.out.println("S17 start");
+        S13Data res=new S13Data();
+        String str=redisService.lindex("S13",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        List<String> ret = redisService.lrange("S13PreStatus",0,19);
+        res.setPreStatus(ret);
+
+        String startTime = redisService.get("S13StartUpTime");
+        res.setStartUpTime(Long.parseLong(startTime));
+
+        String processingTime = redisService.get("S13ProcessingTime");
+        res.setProcessingTime(Long.parseLong(processingTime));
+
+        res.setCommStatus(Boolean.parseBoolean((array[0]=="0"?"true":"false")));
+        res.setDeviceStart(Boolean.parseBoolean((array[1]=="0"?"true":"false")));
+        res.setDeviceStop(Boolean.parseBoolean((array[2]=="0"?"true":"false")));
+        res.setDeviceWork(Boolean.parseBoolean((array[3]=="0"?"true":"false")));
+        res.setDeviceFault(Boolean.parseBoolean((array[4]=="0"?"true":"false")));
+        res.setRunStatus(Integer.parseInt(array[5]));
+        res.setFaultCode1(Long.parseLong(array[6]));
+        res.setFaultCode2(Long.parseLong(array[7]));
+        res.setFaultCode3(Long.parseLong(array[8]));
+        res.setFaultCode4(Long.parseLong(array[9]));
+        res.setDeviceCode(array[10]);
+        res.setWebWidth(Double.parseDouble(array[11]));
+        res.setWebThick(Double.parseDouble(array[12]));
+        res.setWebLength(Double.parseDouble(array[13]));
+        res.setFlangWidth(Double.parseDouble(array[14]));
+        res.setFlangThick(Double.parseDouble(array[15]));
+        res.setFlangLength(Double.parseDouble(array[16]));
+        res.setOutput(Double.parseDouble(array[17]));
+        res.settTakt(Double.parseDouble(array[18]));
+        res.setRealTakt(Double.parseDouble(array[19]));
+        res.setEleEnergy(Double.parseDouble(array[20]));
+
+
+
+
+        //System.out.println("S17 end");
+        return res;
+
+    }
+
     @GetMapping("/S14Data")
     @ResponseBody
     public S14Data toS14Data(HttpServletRequest request) {

@@ -96,6 +96,9 @@ public class baseController {
     @GetMapping("/assemblystationInner")
     public String toassemblystationInnerPage(HttpServletRequest request) {return "assemblystationInner";}
 
+    @GetMapping("/dischargeInner")
+    public String todischargeInnerPage(HttpServletRequest request) {return "dischargeInner";}
+
 
     @GetMapping("/data")
     @ResponseBody

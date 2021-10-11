@@ -40,7 +40,6 @@ public class scheduleWork {
     private static Integer S06preStatus = -1;
 
 
-
     private static Long S07StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
     private static Long S07ProcessingTime = 0L;//当日加工时间
     private static Double S07weldGasPreDay = 0.0;//焊接气体
@@ -82,6 +81,11 @@ public class scheduleWork {
     private static Double S12weldWire = 0.0;//焊丝
     private static Long S12PreHeartBeat = 0L;
     private static Integer S12preStatus = -1;
+
+    private static Long S13StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
+    private static Long S13ProcessingTime = 0L;//当日加工时间
+    private static Long S13PreHeartBeat = 0L;
+    private static Integer S13preStatus = -1;
 
     private static Integer S14preStatus = -1;
 
@@ -197,6 +201,13 @@ public class scheduleWork {
             redisService.rpop("S12HourWireData");
         }
         //------------------------------------------------------
+        //S13-----------------------------------------------
+        str=redisService.lindex("S13",0);
+        //System.out.println(str);
+        array = str.split("\\|");
+        S13StartUpTime = 0L;
+        S13ProcessingTime = 0L;
+        //--------------------------------------------------
     }
 
     @Scheduled(cron = "0 0 */1 * * ?")//每小时
@@ -508,6 +519,33 @@ public class scheduleWork {
         S12weldWire = Double.parseDouble(array[21]) - S12weldWirePreDay;
         //System.out.println(weldWire);
         redisService.set("S12WeldWire",S12weldWire.toString());
+    }
+
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS13Data(){
+        String str=redisService.lindex("S13",0);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S13PreStatus");
+        if(!S13preStatus.equals(Integer.parseInt(array[5]))) {
+            while (len >= 20) {
+                redisService.rpop("S13PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S13PreStatus", array[5] + "|" + formatter.format(new Date()));
+            S13preStatus = Integer.parseInt(array[5]);
+        }
+        if("1".equals(array[0])){//开机中
+            S13StartUpTime = S13StartUpTime + 1;
+            redisService.set("S13StartUpTime",S13StartUpTime.toString());
+        }
+        if("1".equals(array[3])){//工作中
+            S13ProcessingTime = S13ProcessingTime + 1;
+            redisService.set("S13ProcessingTime",S13ProcessingTime.toString());
+        }
     }
 
     @Scheduled(cron = "*/1 * * * * ?")
