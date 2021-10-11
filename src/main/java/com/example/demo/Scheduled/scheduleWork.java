@@ -26,6 +26,14 @@ public class scheduleWork {
     private static Long S04PreHeartBeat = 0L;
     private static Integer S04preStatus = -1;
 
+
+    private static Long S05StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
+    private static Long S05ProcessingTime = 0L;//当日加工时间
+    private static Double S05weldGasPreDay = 0.0;//焊接气体
+    private static Double S05weldGas = 0.0;//焊接气体
+    private static Long S05PreHeartBeat = 0L;
+    private static Integer S05preStatus = -1;
+
     private static Long S06StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
     private static Long S06ProcessingTime = 0L;//当日加工时间
     private static Long S06PreHeartBeat = 0L;
@@ -98,6 +106,18 @@ public class scheduleWork {
         S04StartUpTime = 0L;
         S04ProcessingTime = 0L;
         //--------------------------------------------------
+        //S05---------------------------------------------------
+        str=redisService.lindex("S05",0);
+        //System.out.println(str);
+        array = str.split("\\|");
+        S05StartUpTime = 0L;
+        S05ProcessingTime = 0L;
+        S05weldGasPreDay = Double.parseDouble(array[21]);
+        long len = redisService.llen("S05HourGasData");
+        while((len--)>0){
+            redisService.rpop("S05HourGasData");
+        }
+        //------------------------------------------------------
         //S06-----------------------------------------------
         str=redisService.lindex("S06",0);
         //System.out.println(str);
@@ -120,7 +140,7 @@ public class scheduleWork {
         S07ProcessingTime = 0L;
         S07weldGasPreDay = Double.parseDouble(array[21]);
         S07weldWirePreDay = Double.parseDouble(array[22]);
-        long len = redisService.llen("S07HourWireData");
+        len = redisService.llen("S07HourWireData");
         while((len--)>0){
             redisService.rpop("S07HourWireData");
         }
@@ -182,9 +202,15 @@ public class scheduleWork {
     @Scheduled(cron = "0 0 */1 * * ?")//每小时
     // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
     public void hourlyDataSet(){//
-        //S07-------------------------------------------------------------
-        String str=redisService.lindex("S07",0);
+        //S05------------------------------------------------------------------
+        String str=redisService.lindex("S05",0);
         String[] array = str.split("\\|");
+        S05weldGas = Double.parseDouble(array[21]) - S05weldGasPreDay;
+        redisService.rpush("S05HourGasData",S05weldGas.toString());
+        //---------------------------------------------------------------------
+        //S07-------------------------------------------------------------
+        str=redisService.lindex("S07",0);
+        array = str.split("\\|");
         //S07StartUpTime = 0L;
         //S07ProcessingTime = 0L;
         //weldGasPreDay = Double.parseDouble(array[21]);
@@ -241,6 +267,37 @@ public class scheduleWork {
             S04ProcessingTime = S04ProcessingTime + 1;
             redisService.set("S04ProcessingTime",S04ProcessingTime.toString());
         }
+    }
+
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS05Data(){
+        String str=redisService.lindex("S05",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S05PreStatus");
+        if(!S05preStatus.equals(Integer.parseInt(array[5]))) {
+            while (len >= 20) {
+                redisService.rpop("S05PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S05PreStatus", array[5] + "|" + formatter.format(new Date()));
+            S05preStatus = Integer.parseInt(array[5]);
+        }
+        if("1".equals(array[0])){//开机中
+            S05StartUpTime = S05StartUpTime + 1;
+            redisService.set("S05StartUpTime",S05StartUpTime.toString());
+        }
+        if("1".equals(array[3])){//工作中
+            S05ProcessingTime = S05ProcessingTime + 1;
+            redisService.set("S05ProcessingTime",S05ProcessingTime.toString());
+        }
+        S05weldGas = Double.parseDouble(array[21]) - S05weldGasPreDay;
+        //System.out.println(weldWire);
+        redisService.set("S05WeldGas",S05weldGas.toString());
     }
 
 
@@ -377,7 +434,7 @@ public class scheduleWork {
                 len--;
             }
 
-            redisService.lpush("S10sPreStatus", array[5] + "|" + formatter.format(new Date()));
+            redisService.lpush("S10PreStatus", array[5] + "|" + formatter.format(new Date()));
             S10preStatus = Integer.parseInt(array[5]);
         }
         if("1".equals(array[0])){//开机中
@@ -437,7 +494,7 @@ public class scheduleWork {
                 len--;
             }
 
-            redisService.lpush("S12sPreStatus", array[5] + "|" + formatter.format(new Date()));
+            redisService.lpush("S12PreStatus", array[5] + "|" + formatter.format(new Date()));
             S12preStatus = Integer.parseInt(array[5]);
         }
         if("1".equals(array[0])){//开机中
