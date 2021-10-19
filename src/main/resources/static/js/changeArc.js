@@ -126,6 +126,12 @@ var preTotalMax=500;
 var optionOfCurrent = {
     //backgroundColor: 'black',
     tooltip: {
+        textStyle: { // 提示框浮层的文本样式。
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontFamily: 'sans-serif',
+            fontSize: fontSize(1.2),
+        }
         /*formatter: function (params) {
             //console.log(params);
 
@@ -449,7 +455,7 @@ var optionTemplete1 =  {
             },
             rotate:0,
             textStyle: {
-                fontSize: fontSize(1.2),
+                fontSize: fontSize(1),
                 color: '#f9f9fa'
             }
         },
@@ -467,7 +473,7 @@ var optionTemplete1 =  {
         axisLabel: {
             interval:(maxValue2 - minValue)/5,
             textStyle: {
-                fontSize: fontSize(1.2),
+                fontSize: fontSize(1),
                 color: '#f9f9fa',
             },
             margin:4
