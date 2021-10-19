@@ -1,13 +1,25 @@
-	var MaxCount;
-	var count=parseInt(0);
-	var preStatus=-1;
-	var box=document.getElementById("ulbox");
-	var height=parseInt(box.clientHeight);
-	MaxCount=Math.trunc(height/25)-1;
+var MaxCount;
+var count=parseInt(0);
+var preStatus=-1;
 
+let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+let clientHeight = document.getElementsByClassName("wbox")[0].clientHeight;
 
+//设计图参考宽度
+let designW = 1920,designH = 943;
+let fontsize = Math.min(Math.trunc(parseInt(clientWidth) / designW * 13), Math.trunc(parseInt(clientHeight) / designH * 13));
 
-	console.log(MaxCount);
+var box=document.getElementById("ulbox");
+var ul=document.getElementById("scrollDiv");
+var lines=0,lineHeight=0;
+var width=parseInt(box.clientWidth), height=parseInt(box.clientHeight),newHeight,newWidth,marginLeft;
+lineHeight = (Math.trunc(fontsize*1.4/5)+1)*5;
+newHeight=(Math.trunc(height/lineHeight)-1)*lineHeight;
+
+//console.log("lineHieght:"+lineHeight);
+//console.log("newHeight:"+newHeight);
+
+MaxCount=Math.trunc(newHeight/lineHeight);
 	//var data={"output":"59.321167","taktTime":"21.500000","rateOfStartup":"96.500000","rateOfUtilization":"94.500000","current":"11.500000",
 	//"vol":"215.000000","usefulPower":"2.101625","currentElectricEnergy":"333.017914","heartbeat":"1.000000","status":"3.000000"};
 	//日期格式化函数
@@ -310,7 +322,7 @@
 					console.log();
 					$('#scrollDiv').myScroll({
 						speed: 40, //数值越大，速度越慢
-						rowHeight: 25 //li的高度
+						rowHeight: lineHeight //li的高度
 					});
 				}
 
