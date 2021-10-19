@@ -158,7 +158,7 @@ var optionOfCurrent = {
             show: false
         },
         axisLabel: {
-            margin: 10,
+            margin: fontSize(1),
             textStyle: {
                 color: '#00FFFF',
                 fontSize: fontSize(1.4)
@@ -174,78 +174,79 @@ var optionOfCurrent = {
             show: false
         },
         axisLabel: {
-            margin: 10,
+            margin: fontSize(1),
             textStyle: {
                 color: '#FFF',
                 fontSize: fontSize(1.4)
             },formatter: function(value){
+                console.log("电能消耗"+value.toString());
                 return value.toString()+" kW·h"
             }
         }
     }],
     grid: {
         top: 'center',
-        height: 200,
-        left: 100,
-        right: 100
+        height: '80%',
+        left: '20%',
+        right: '20%'
     },
     series: [{
-            // current data
-            type: 'pictorialBar',
-            symbol: 'rect',
-            itemStyle: {
-                normal: {
-                    barBorderRadius: 5,
-                    color: '#00FFFF',
+        // current data
+        type: 'pictorialBar',
+        symbol: 'rect',
+        itemStyle: {
+            normal: {
+                barBorderRadius: 5,
+                color: '#00FFFF',
 
-                }
-            },
-            symbolRepeat: 'fixed',
-            symbolMargin: '50%',
-            symbolClip: true,
-            symbolSize: [5,20],
-            symbolBoundingData: 188,
-            data: [188],
-            z: 99999999,
-            animationEasing: 'elasticOut',
-            animationDelay: function(dataIndex, params) {
-                return params.index * 30;
             }
-        }, {
-            // full data
-            type: 'pictorialBar',
-            itemStyle: {
-                normal: {
-                    color: 'rgba(54,215,182,0.27)'
-                }
-            },
-            label: {
-                normal: {
-                    show: true,
-                    formatter: function(params) {
-                        return ""
-                    },
-                    position: 'right',
-                    offset: [10, 0],
-                    textStyle: {
-                        color: '#FFF',
-                        fontSize: 18
-                    }
-                }
-            },
-            animationDuration: 0,
-            symbolRepeat: 'fixed',
-            symbolMargin: '50%',
-            symbol: 'rect',
-            symbolSize: [5,20],
-            symbolBoundingData: 200,
-            data: [188],
-            z: 99999,
-            animationEasing: 'elasticOut',
-            animationDelay: function(idx) {
-                return idx * 30;
-            }
+        },
+        symbolRepeat: 'fixed',
+        symbolMargin: '50%',
+        symbolClip: true,
+        symbolSize: [5,20],
+        symbolBoundingData: 188,
+        data: [188],
+        z: 99999999,
+        animationEasing: 'elasticOut',
+        animationDelay: function(dataIndex, params) {
+            return params.index * 30;
         }
+    }, {
+        // full data
+        type: 'pictorialBar',
+        itemStyle: {
+            normal: {
+                color: 'rgba(54,215,182,0.27)'
+            }
+        },
+        label: {
+            normal: {
+                show: true,
+                formatter: function(params) {
+                    return ""
+                },
+                position: 'right',
+                offset: [10, 0],
+                textStyle: {
+                    color: '#FFF',
+                    fontSize: 18
+                }
+            }
+        },
+        animationDuration: 0,
+        symbolRepeat: 'fixed',
+        symbolMargin: '50%',
+        symbol: 'rect',
+        symbolSize: [5,20],
+        symbolBoundingData: 200,
+        data: [188],
+        z: 99999,
+        animationEasing: 'elasticOut',
+        animationDelay: function(idx) {
+            return idx * 30;
+        }
+    }
     ]
 };
 
@@ -254,17 +255,17 @@ current.setOption(optionOfCurrent);
 
 
 function updateCurrentData(data){
-   // console.log("Current"+data);
+    // console.log("Current"+data);
     var maxValue = optionOfCurrent.xAxis.max;
     if(data>=maxValue) maxValue = (Math.ceil(maxValue/100)*100)*2;
     if(data == 0) maxValue = 100;
     //console.log(maxValue);
     optionOfCurrent.xAxis.max = maxValue;
-    optionOfCurrent.yAxis[1].data = "["+data+"]";
+    optionOfCurrent.yAxis[1].data = data.toString();
     optionOfCurrent.series[0].symbolBoundingData = data;
-    optionOfCurrent.series[0].data = "["+data+"]";
+    optionOfCurrent.series[0].data = data.toString();
     optionOfCurrent.series[1].symbolBoundingData = maxValue;
-    optionOfCurrent.series[1].data = "["+maxValue+"]";
+    optionOfCurrent.series[1].data = maxValue.toString();
     current.setOption(optionOfCurrent);
 }
 
@@ -336,6 +337,12 @@ var optionTemplete =  {
     },
     tooltip: {
         trigger: 'axis',
+        textStyle: { // 提示框浮层的文本样式。
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontFamily: 'sans-serif',
+            fontSize: fontSize(1.2),
+        },
         formatter: function (params) {
             //console.log(params);
             return  params[0].name+":"+params[0].value+"Nm³";
@@ -362,7 +369,7 @@ var optionTemplete =  {
             },
             rotate:0,
             textStyle: {
-                fontSize: 8,
+                fontSize: fontSize(1.2),
                 color: '#f9f9fa'
             }
         },
@@ -380,7 +387,7 @@ var optionTemplete =  {
         axisLabel: {
             interval:(maxValue1 - minValue)/5,
             textStyle: {
-                fontSize: 8,
+                fontSize: fontSize(1.2),
                 color: '#f9f9fa',
             },
             margin:4

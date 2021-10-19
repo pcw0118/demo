@@ -42,7 +42,7 @@ $(function(){
 	 var str="";
 	 for(var i=0;i<=lines;i++){
 			//str+="<li class='item'><p>"+parkName[i]+"</p><div class='text'><span class='in'>"+numberOfEntrance[i]+"</span><span class='out''>"+numberOfExit[i]+"</span></div></li>";
-			str+="<li style=height:"+lineHeight+"px;margin-left:"+marginLeft+"px;><p style='text-align:left;margin-left:7%;width:50%;'></p><p style='text-align:right; color:#7AB2FF;width:40%;'></p></li>"
+			str+="<li style=height:"+lineHeight+"px;margin-left:"+marginLeft+"px;><p style='height:"+lineHeight+"px;text-align:left;margin-left:7%;width:50%;'></p><p style='height:"+lineHeight+"px;text-align:right; color:#7AB2FF;width:40%;'></p></li>"
 			document.getElementById("ulreal").innerHTML = str;
 	  };
 						
