@@ -161,7 +161,7 @@ var optionOfCurrent = {
             margin: fontSize(1),
             textStyle: {
                 color: '#00FFFF',
-                fontSize: fontSize(1.4)
+                fontSize: fontSize(1.2)
             }
         }
     },{
@@ -177,7 +177,7 @@ var optionOfCurrent = {
             margin: fontSize(1),
             textStyle: {
                 color: '#FFF',
-                fontSize: fontSize(1.4)
+                fontSize: fontSize(1.2)
             },formatter: function(value){
                 console.log("电能消耗"+value.toString());
                 return value.toString()+" kW·h"
@@ -204,7 +204,7 @@ var optionOfCurrent = {
         symbolRepeat: 'fixed',
         symbolMargin: '50%',
         symbolClip: true,
-        symbolSize: [5,20],
+        symbolSize: [fontSize(0.5),fontSize(1.8)],
         symbolBoundingData: 188,
         data: [188],
         z: 99999999,
@@ -238,7 +238,7 @@ var optionOfCurrent = {
         symbolRepeat: 'fixed',
         symbolMargin: '50%',
         symbol: 'rect',
-        symbolSize: [5,20],
+        symbolSize: [fontSize(0.5),fontSize(1.8)],
         symbolBoundingData: 200,
         data: [188],
         z: 99999,
@@ -380,7 +380,7 @@ var optionTemplete =  {
     },
     yAxis: {
         type: 'value',
-        boundaryGap: [0, '100%'],
+        boundaryGap: [0, '98%'],
         axisTick: {
             show: false
         },

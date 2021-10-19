@@ -161,7 +161,7 @@ var optionOfCurrent = {
             margin: fontSize(1),
             textStyle: {
                 color: '#00FFFF',
-                fontSize: fontSize(1.4)
+                fontSize: fontSize(1.2)
             }
         }
     },{
@@ -177,7 +177,7 @@ var optionOfCurrent = {
             margin: fontSize(1),
             textStyle: {
                 color: '#FFF',
-                fontSize: fontSize(1.4)
+                fontSize: fontSize(1.2)
             },formatter: function(value){
                 console.log("电能消耗"+value.toString());
                 return value.toString()+" kW·h"
@@ -191,62 +191,62 @@ var optionOfCurrent = {
         right: '20%'
     },
     series: [{
-            // current data
-            type: 'pictorialBar',
-            symbol: 'rect',
-            itemStyle: {
-                normal: {
-                    barBorderRadius: 5,
-                    color: '#00FFFF',
+        // current data
+        type: 'pictorialBar',
+        symbol: 'rect',
+        itemStyle: {
+            normal: {
+                barBorderRadius: 5,
+                color: '#00FFFF',
 
-                }
-            },
-            symbolRepeat: 'fixed',
-            symbolMargin: '50%',
-            symbolClip: true,
-            symbolSize: [5,20],
-            symbolBoundingData: 188,
-            data: [188],
-            z: 99999999,
-            animationEasing: 'elasticOut',
-            animationDelay: function(dataIndex, params) {
-                return params.index * 30;
             }
-        }, {
-            // full data
-            type: 'pictorialBar',
-            itemStyle: {
-                normal: {
-                    color: 'rgba(54,215,182,0.27)'
-                }
-            },
-            label: {
-                normal: {
-                    show: true,
-                    formatter: function(params) {
-                        return ""
-                    },
-                    position: 'right',
-                    offset: [10, 0],
-                    textStyle: {
-                        color: '#FFF',
-                        fontSize: 18
-                    }
-                }
-            },
-            animationDuration: 0,
-            symbolRepeat: 'fixed',
-            symbolMargin: '50%',
-            symbol: 'rect',
-            symbolSize: [5,20],
-            symbolBoundingData: 200,
-            data: [188],
-            z: 99999,
-            animationEasing: 'elasticOut',
-            animationDelay: function(idx) {
-                return idx * 30;
-            }
+        },
+        symbolRepeat: 'fixed',
+        symbolMargin: '50%',
+        symbolClip: true,
+        symbolSize: [fontSize(0.5),fontSize(1.8)],
+        symbolBoundingData: 188,
+        data: [188],
+        z: 99999999,
+        animationEasing: 'elasticOut',
+        animationDelay: function(dataIndex, params) {
+            return params.index * 30;
         }
+    }, {
+        // full data
+        type: 'pictorialBar',
+        itemStyle: {
+            normal: {
+                color: 'rgba(54,215,182,0.27)'
+            }
+        },
+        label: {
+            normal: {
+                show: true,
+                formatter: function(params) {
+                    return ""
+                },
+                position: 'right',
+                offset: [10, 0],
+                textStyle: {
+                    color: '#FFF',
+                    fontSize: 18
+                }
+            }
+        },
+        animationDuration: 0,
+        symbolRepeat: 'fixed',
+        symbolMargin: '50%',
+        symbol: 'rect',
+        symbolSize: [fontSize(0.5),fontSize(1.8)],
+        symbolBoundingData: 200,
+        data: [188],
+        z: 99999,
+        animationEasing: 'elasticOut',
+        animationDelay: function(idx) {
+            return idx * 30;
+        }
+    }
     ]
 };
 
@@ -460,7 +460,7 @@ var optionTemplete1 =  {
     },
     yAxis: {
         type: 'value',
-        boundaryGap: [0, '100%'],
+        boundaryGap: [0, '98%'],
         axisTick: {
             show: false
         },

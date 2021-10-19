@@ -374,7 +374,7 @@ var optionTemplete =  {
     },
     yAxis: {
         type: 'value',
-        boundaryGap: [0, '100%'],
+        boundaryGap: [0, '98%'],
         axisTick: {
             show: false
         },
