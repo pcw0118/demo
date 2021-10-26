@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hxzz_db
+    username: hxzz
+    password: abc123
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: select 'x'
+      pool-name: prod
+      password: abc123
+      jdbc-url: jdbc:postgresql://localhost:5432/hxzz_db
+
+  redis:
+    host: localhost
+    database: 0
+    port: 6379
+    password: abc123
+  profiles: test

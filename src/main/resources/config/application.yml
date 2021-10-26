@@ -1,0 +1,27 @@
+server:
+  port: 9797
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.example: debug
+
+debug: false
+spring:
+  profiles:
+    active: test
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_empty
+    deserialization:
+      fail_on_unknown_properties: true
+  http:
+    encoding:
+      charset: utf-8
+      force: true
+  thymeleaf:
+    cache: false
+    enable-spring-el-compiler: true
