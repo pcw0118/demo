@@ -99,6 +99,9 @@ public class baseController {
     @GetMapping("/dischargeInner")
     public String todischargeInnerPage(HttpServletRequest request) {return "dischargeInner";}
 
+    @GetMapping("/sprayDryInner")
+    public String tosprayDryInnerPage(HttpServletRequest request) {return "sprayDryInner";}
+
 
     @GetMapping("/data")
     @ResponseBody

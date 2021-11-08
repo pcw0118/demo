@@ -254,19 +254,19 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 				text: `检修剩余`,
 				subtext: data.remainDays+'天',
 				left: 'center',
-				top: '40%', //top待调整
+
 				textStyle: {
 					color: '#fff',
-					fontSize: 14,
+					fontSize: fontSize(1.4),
 					fontFamily: 'PingFangSC-Regular',
 				},
 				subtextStyle: {
 					color: '#fff',
-					fontSize: 14,
+					fontSize: fontSize(1.4),
 					fontFamily: 'PingFangSC-Regular',
 					top: 'center'
 				},
-				itemGap: 5 //主副标题间距
+				itemGap: fontSize(0.5) //主副标题间距
 			}
 		});
 

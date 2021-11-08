@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.zip.DeflaterOutputStream;
 
 @Controller
 @RequestMapping("/data")
@@ -666,6 +667,127 @@ public class dataController {
 
 
         //System.out.println("S17 end");
+        return res;
+
+    }
+
+    @GetMapping("/S18Data")
+    @ResponseBody
+    public S18Data toS18Data(HttpServletRequest request) {
+        S18Data res=new S18Data();
+        String str=redisService.lindex("S18",0);
+        String temp;
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        //String HeartBeat = redisService.get("S18HeartBeat");
+        //res.setHeartBeat(Long.parseLong(HeartBeat));
+
+        List<String> ret = redisService.lrange("S18PrePrimerSprayStatus",0,19);//底漆喷涂
+        res.setPrePrimerSprayStatus(ret);
+
+        ret = redisService.lrange("S18PreTopcoatSprayStatus",0,19);//面漆喷涂
+        res.setPreTopCoatSprayStatus(ret);
+
+        ret = redisService.lrange("S18PrePrimerDryStatus",0,19);//底漆烘干
+        res.setPrePrimerDryStatus(ret);
+
+        ret = redisService.lrange("S18PreTopcoatDryStatus",0,19);//面漆烘干
+        res.setPreTopCoatDryStatus(ret);
+
+        temp = redisService.get("S18PrimerSprayUtilize");
+        res.setPrimerSprayUtilize(Double.parseDouble(temp));
+
+        temp = redisService.get("S18TopcoatSprayUtilize");
+        res.setTopcoatSprayUtilize(Double.parseDouble(temp));
+
+        temp = redisService.get("S18PrimerDryUtilize");
+        res.setPrimerDryUtilize(Double.parseDouble(temp));
+
+        temp = redisService.get("S18TopcoatDryUtilize");
+        res.setTopcoatDryUtilize(Double.parseDouble(temp));
+        //参照S18Data以及喷涂线redis内数据
+        res.setPrimerDryFirstStatus(Integer.parseInt(array[0],2));
+        res.setPrimerDrySecondStatus(Integer.parseInt(array[1],2));
+        res.setPrimerDryThirdStatus(Integer.parseInt(array[2],2));
+        res.setPrimerDryFirstAlarm(Integer.parseInt(array[3],2));
+        res.setPrimerDrySecondAlarm(Integer.parseInt(array[4],2));
+
+        res.setTopcoatDryFirstStatus(Integer.parseInt(array[6],2));
+        res.setTopcoatDrySecondStatus(Integer.parseInt(array[7],2));
+        res.setTopcoatDryThirdStatus(Integer.parseInt(array[8],2));
+        res.setTopcoatDryFirstAlarm(Integer.parseInt(array[9],2));
+        res.setTopcoatDrySecondAlarm(Integer.parseInt(array[10],2));
+
+        res.setPrimerDryTemperature1(Double.parseDouble(array[12]));
+        res.setPrimerDryTemperature2(Double.parseDouble(array[13]));
+        res.setPrimerDrySetTemperature(Double.parseDouble(array[14]));
+        res.setPrimerDrySetAlarmTemperature(Double.parseDouble(array[15]));
+
+        res.setTopcoatDryTemperature1(Double.parseDouble(array[16]));
+        res.setTopcoatDryTemperature2(Double.parseDouble(array[17]));
+        res.setTopcoatDrySetTemperature(Double.parseDouble(array[18]));
+        res.setTopcoatDrySetAlarmTemperature(Double.parseDouble(array[19]));
+
+        res.setPrimerSprayFirstStatus(Integer.parseInt(array[20],2));
+        res.setPrimerSpraySecondStatus(Integer.parseInt(array[21],2));
+        res.setPrimerSprayThirdStatus(Integer.parseInt(array[22],2));
+        res.setPrimerSprayFourthStatus(Integer.parseInt(array[23],2));
+        res.setPrimerSprayFifthStatus(Integer.parseInt(array[24],2));
+        res.setPrimerSpraySixthStatus(Integer.parseInt(array[25],2));
+        res.setPrimerSpraySeventhStatus(Integer.parseInt(array[26],2));
+        res.setPrimerSprayEighthStatus(Integer.parseInt(array[27],2));
+        res.setPrimerSprayNinethStatus(Integer.parseInt(array[28],2));
+
+        res.setTopcoatSprayFirstStatus(Integer.parseInt(array[30],2));
+        res.setTopcoatSpraySecondStatus(Integer.parseInt(array[31],2));
+        res.setTopcoatSprayThirdStatus(Integer.parseInt(array[32],2));
+        res.setTopcoatSprayFourthStatus(Integer.parseInt(array[33],2));
+
+        res.setPrimerSprayChainSetFreq(Double.parseDouble(array[34]));
+        res.setPrimerSprayTraverseSetFreqHSpeed(Double.parseDouble(array[35]));
+        res.setPrimerSprayTraverseSetFreqLSpeed(Double.parseDouble(array[36]));
+        res.setPrimerSprayAutoSetSpeedLiftShaft(Double.parseDouble(array[37]));
+        res.setPrimerSprayAutoSetSpeedTraverse(Double.parseDouble(array[38]));
+        res.setPrimerSprayManualSetSpeedLiftShaft(Double.parseDouble(array[39]));
+        res.setPrimerSprayManualSetSpeedTraverse(Double.parseDouble(array[40]));
+
+        res.setTopcoatSprayAutoSetSpeedLiftShaft(Double.parseDouble(array[41]));
+        res.setTopcoatSprayAutoSetSpeedTraverse(Double.parseDouble(array[42]));
+        res.setTopcoatSprayManualSetSpeedLiftShaft(Double.parseDouble(array[43]));
+        res.setTopcoatSprayManualSetSpeedTraverse(Double.parseDouble(array[44]));
+
+        res.setLength(Double.parseDouble(array[45]));
+        res.setHeight(Double.parseDouble(array[46]));
+        res.setPrimerSprayElec(Double.parseDouble(array[47]));
+        res.setPrimerSprayStartupTime(Double.parseDouble(array[48]));
+        res.setPrimerSprayMaintainTime(Double.parseDouble(array[49]));
+        res.setPrimerSprayRemainTime(Double.parseDouble(array[50]));
+        res.setPrimerSprayTakt(Double.parseDouble(array[51]));
+        res.setPrimerSprayProcessTimes(Double.parseDouble(array[52]));
+
+        res.setPrimerDryElec(Double.parseDouble(array[53]));
+        res.setPrimerDryStartupTime(Double.parseDouble(array[54]));
+        res.setPrimerDryMaintainTime(Double.parseDouble(array[55]));
+        res.setPrimerDryRemainTime(Double.parseDouble(array[56]));
+        res.setPrimerDryTakt(Double.parseDouble(array[57]));
+        res.setPrimerDryProcessTimes(Double.parseDouble(array[58]));
+
+        res.setTopcoatSprayElec(Double.parseDouble(array[59]));
+        res.setTopcoatSprayStartupTime(Double.parseDouble(array[60]));
+        res.setTopcoatSprayMaintainTime(Double.parseDouble(array[61]));
+        res.setTopcoatSprayRemainTime(Double.parseDouble(array[62]));
+        res.setTopcoatSprayTakt(Double.parseDouble(array[63]));
+        res.setTopcoatSprayProcessTimes(Double.parseDouble(array[64]));
+
+        res.setTopcoatDryElec(Double.parseDouble(array[65]));
+        res.setTopcoatDryStartupTime(Double.parseDouble(array[66]));
+        res.setTopcoatDryMaintainTime(Double.parseDouble(array[67]));
+        res.setTopcoatDryRemainTime(Double.parseDouble(array[68]));
+        res.setTopcoatDryTakt(Double.parseDouble(array[69]));
+        res.setTopcoatDryProcessTimes(Double.parseDouble(array[70]));
+
+
         return res;
 
     }

@@ -57,6 +57,34 @@ ul,li{margin:0;padding:0;list-style: none;}
 	float:left;
 }
 
+#scrollDiv1{
+	width: 400px;
+	height: 500px;
+	margin-top:60px;
+	border: none;
+	line-height: 25px;
+	font-size: 25px;
+	overflow: hidden;
+}
+
+#scrollDiv1 li{
+	height:25px;
+	list-style-type: none;
+	list-style: none;
+	margin-left: 0px;
+}
+
+#scrollDiv1 li::marker{
+	content: none;
+}
+
+#scrollDiv1 p {
+	height:25px;
+	width:45%;
+	font-size:1.2rem;
+	float:left;
+}
+
 textarea {
     margin: 0; font-weight:normal;
     margin: 0;
@@ -343,6 +371,17 @@ select::-ms-expand { display: none; }.mod_select{position:absolute;left:30%;top:
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
 	background-color: #FFFFFF;
+}
+
+.beMiddle{
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+}
+
+.active{
+	background-color: #7AB2FFFF;
 }
 
 

@@ -293,16 +293,16 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 				top: '40%', //top待调整
 				textStyle: {
 					color: '#fff',
-					fontSize: 14,
+					fontSize: fontSize(1.4),
 					fontFamily: 'PingFangSC-Regular',
 				},
 				subtextStyle: {
 					color: '#fff',
-					fontSize: 14,
+					fontSize: fontSize(1.4),
 					fontFamily: 'PingFangSC-Regular',
 					top: 'center'
 				},
-				itemGap: 5 //主副标题间距
+				itemGap: fontSize(0.5) //主副标题间距
 			}
 		});
 

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.example.demo.help.Constant.*;
+
 @EnableScheduling
 @Component
 @EnableAsync
@@ -96,6 +98,19 @@ public class scheduleWork {
     private static Long S17HeartBeat = 0L;
     private static Long S17PreHeartBeat = 0L;
     private static Integer S17preStatus = -1;
+
+    private static String S18PrePrimerSprayStatus = "";
+    private static String S18PreTopcoatSprayStatus = "";
+    private static String S18PrePrimerDryStatus = "";
+    private static String S18PreTopcoatDryStatus = "";
+    private static Integer S18PrePrimerSprayProcessingTimes = 0;
+    private static Integer S18PrePrimerDryProcessingTimes = 0;
+    private static Integer S18PreTopcoatSprayProcessingTimes = 0;
+    private static Integer S18PreTopcoatDryProcessingTimes = 0;
+    private static Double S18PrimerSprayTotalTakt = 0.0;
+    private static Double S18TopcoatSprayTotalTakt = 0.0;
+    private static Double S18PrimerDryTotalTakt = 0.0;
+    private static Double S18TopcoatDryTotalTakt = 0.0;
 
 
 
@@ -625,6 +640,109 @@ public class scheduleWork {
 
             redisService.lpush("S17PreStatus", array[18] + "|" + formatter.format(new Date()));
             S17preStatus = Integer.parseInt(array[18]);
+        }
+    }
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    //@Async
+    public void ComputeS18Data(){
+        //System.out.println("S18");
+        String str=redisService.lindex("S18",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+        String S18PrimerDryStatus = array[0].substring(2)+array[1]+array[2].substring(0,1);
+        String S18TopcoatDryStatus = array[6].substring(2)+array[7]+array[8].substring(0,1);
+        String S18PrimerSprayStatus = array[20].substring(0,5)+array[22]+array[23].substring(0,4);
+        String S18TopcoatSprayStatus = array[30].substring(0,5)+array[31].substring(1)+array[32].substring(0,5);
+
+
+        if(Double.valueOf(array[48]).intValue() == 0) {//刚开机时，所有的加工时长都重置为0
+            S18PrimerSprayTotalTakt = 0.0;
+            redisService.set("S18PrimerSprayUtilize",Double.valueOf("100.0").toString());
+            S18PrePrimerSprayProcessingTimes = 0;
+        }else if(Double.valueOf(array[52]).intValue() != S18PrePrimerSprayProcessingTimes){
+            S18PrimerSprayTotalTakt += Double.valueOf(array[51]);
+            redisService.set("S18PrimerSprayUtilize",Double.valueOf(S18PrimerSprayTotalTakt/Double.valueOf(array[48])).toString());
+            S18PrePrimerSprayProcessingTimes = Double.valueOf(array[52]).intValue();
+        }
+        if(Double.valueOf(array[60]).intValue() == 0) {
+            S18TopcoatSprayTotalTakt = 0.0;
+            redisService.set("S18TopcoatSprayUtilize",Double.valueOf("100.0").toString());
+            S18PreTopcoatSprayProcessingTimes = 0;
+        }else if(Double.valueOf(array[64]).intValue() != S18PreTopcoatSprayProcessingTimes){
+            S18TopcoatSprayTotalTakt += Double.valueOf(array[63]);
+            redisService.set("S18TopcoatSprayUtilize",Double.valueOf(S18TopcoatSprayTotalTakt/Double.valueOf(array[60])).toString());
+            S18PreTopcoatSprayProcessingTimes = Double.valueOf(array[64]).intValue();
+        }
+        if(Double.valueOf(array[54]).intValue() == 0) {
+            S18PrimerDryTotalTakt = 0.0;
+            redisService.set("S18PrimerDryUtilize",Double.valueOf("100.0").toString());
+            S18PrePrimerDryProcessingTimes = 0;
+        }else if(Double.valueOf(array[58]).intValue() != S18PrePrimerDryProcessingTimes){
+            S18PrimerDryTotalTakt += Double.valueOf(array[57]);
+            redisService.set("S18PrimerDryUtilize",Double.valueOf(S18PrimerDryTotalTakt/Double.valueOf(array[54])).toString());
+            S18PrePrimerDryProcessingTimes = Double.valueOf(array[58]).intValue();
+        }
+        if(Double.valueOf(array[66]).intValue() == 0) {
+            S18TopcoatDryTotalTakt = 0.0;
+            redisService.set("S18TopcoatDryUtilize",Double.valueOf("100.0").toString());
+            S18PreTopcoatDryProcessingTimes = 0;
+        }else if(Double.valueOf(array[70]).intValue() != S18PreTopcoatDryProcessingTimes){
+            S18TopcoatDryTotalTakt += Double.valueOf(array[69]);
+            redisService.set("S18TopcoatDryUtilize",Double.valueOf(S18TopcoatDryTotalTakt/Double.valueOf(array[66])).toString());
+            S18PreTopcoatDryProcessingTimes = Double.valueOf(array[70]).intValue();
+        }
+
+        int len;
+
+
+        if(!S18PrePrimerDryStatus.equals(S18PrimerDryStatus)){
+            redisService.ltrim("S18PrePrimerDryStatus",1,0);//清空
+            len = S18PrimerDryStatus.length();
+            for(int i = 0;i<len;i++){
+                char c = S18PrimerDryStatus.charAt(i);
+                if('1' == c){
+                    redisService.lpush("S18PrePrimerDryStatus", PrimerDryStatus.get(i) + "|" + formatter.format(new Date()));
+                }
+            }
+            S18PrePrimerDryStatus = S18PrimerDryStatus;
+        }
+
+        if(!S18PreTopcoatDryStatus.equals(S18TopcoatDryStatus)){
+            redisService.ltrim("S18PreTopcoatDryStatus",1,0);//清空
+            len = S18TopcoatDryStatus.length();
+            for(int i = 0;i<len;i++){
+                char c = S18TopcoatDryStatus.charAt(i);
+                if('1' == c){
+                    redisService.lpush("S18PreTopcoatDryStatus", TopcoatDryStatus.get(i) + "|" + formatter.format(new Date()));
+                }
+            }
+            S18PreTopcoatDryStatus = S18TopcoatDryStatus;
+        }
+
+        if(!S18PrePrimerSprayStatus.equals(S18PrimerSprayStatus)){
+            redisService.ltrim("S18PrePrimerSprayStatus",1,0);//清空
+            len = S18PrimerSprayStatus.length();
+            for(int i = 0;i<len;i++){
+                char c = S18PrimerSprayStatus.charAt(i);
+                if('1' == c){
+                    redisService.lpush("S18PrePrimerSprayStatus", PrimerSprayStatus.get(i) + "|" + formatter.format(new Date()));
+                }
+            }
+            S18PrePrimerSprayStatus = S18PrimerSprayStatus;
+        }
+
+        if(!S18PreTopcoatSprayStatus.equals(S18TopcoatSprayStatus)){
+            redisService.ltrim("S18PreTopcoatSprayStatus",1,0);//清空
+            len = S18TopcoatSprayStatus.length();
+            for(int i = 0;i<len;i++){
+                char c = S18TopcoatSprayStatus.charAt(i);
+                if('1' == c){
+                    redisService.lpush("S18PreTopcoatSprayStatus", TopcoatSprayStatus.get(i) + "|" + formatter.format(new Date()));
+                }
+            }
+            S18PreTopcoatSprayStatus = S18TopcoatSprayStatus;
         }
     }
 
