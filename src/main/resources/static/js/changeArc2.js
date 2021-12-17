@@ -890,11 +890,11 @@ function changeData(data) {
 }
 
 
-
+var text = localStorage.getItem("token");
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S12Data",
+        url:"/data/S12Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeData(result);
@@ -904,7 +904,7 @@ setInterval(function(){
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S12Data",
+        url:"/data/S12Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeHearts(result);

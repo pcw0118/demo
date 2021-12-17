@@ -20,7 +20,7 @@ import java.util.Map;
 import com.example.demo.help.Response;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/apidata")
 public class RealTimeDataController {
     @Autowired
     private RedisService redisService;

@@ -164,4 +164,4 @@ Stats.Panel = function ( name, fg, bg ) {
 
 };
 
-export default Stats;
+export {Stats};

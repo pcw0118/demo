@@ -20,5 +20,9 @@ spring:
     host: localhost
     database: 0
     port: 6379
-    password: abc123
+    password: AIITXIOS
+  jwt:
+    secret: mySecret
+    expire: 3600
+    authorization: access-token
   profiles: test

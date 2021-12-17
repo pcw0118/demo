@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.Persistence.mapper.SearchMapper">
+    <resultMap id="BaseResultMap" type="com.example.demo.Persistence.model.ResultEntity">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="company" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="stime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="device_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="float_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="int_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="bool_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="realResultMap" type="com.example.demo.Persistence.model.ResultEntity">
+        <result property="company" column="company" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="stime" column="stime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result property="deviceCode" column="device_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="floatNum" column="float_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="intNum" column="int_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="boolNum" column="bool_num" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        company,stime,device_code,float_num,int_num,bool_num
+    </sql>
+
+    <select id="search" parameterType="com.example.demo.Persistence.model.SearchEntity" resultMap="realResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ${deviceName}
+        <where>
+            <if test="company !=null">
+                company = #{company,jdbcType=VARCHAR}
+            </if>
+            <if test="deviceCode != null">
+                and device_code = #{deviceCode,jdbcType = VARCHAR}
+            </if>
+            <if test="startTime !=null">
+                and stime between  #{startTime,jdbcType=TIMESTAMP}::timestamp
+            </if>
+            <if test="endTime !=null">
+                and #{endTime,jdbcType=TIMESTAMP}::timestamp
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -366,9 +366,12 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 		}
 	}
 
+	var text = localStorage.getItem("token");
+	//console.log(text);
+
 	setInterval(function(){
 		$.ajax({
-		url:"/data/S17Data",
+		url:"/data/S17Data?access_token="+text,
 		type:"GET",
 		success:(result)=>{
 			console.log(result);
@@ -378,7 +381,7 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 
 	setInterval(function(){
 		$.ajax({
-			url:"/data/S17Data",
+			url:"/data/S17Data?access_token="+text,
 			type:"GET",
 			success:(result)=>{
 				//console.log(result);

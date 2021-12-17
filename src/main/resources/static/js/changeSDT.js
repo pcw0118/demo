@@ -446,9 +446,11 @@ function changeTick(data){
 }
 
 
+var text = localStorage.getItem("token");
+
 setInterval(function(){
     $.ajax({
-        url:"/data/S15Data",
+        url:"/data/S15Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeData(result);
@@ -458,7 +460,7 @@ setInterval(function(){
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S15Data",
+        url:"/data/S15Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeHearts(result);

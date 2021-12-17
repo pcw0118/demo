@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan("com.example.demo.persistance.mapper")
+@MapperScan("com.example.demo.Persistence.mapper")
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 public class DemoApplication {
 

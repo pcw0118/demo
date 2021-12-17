@@ -21,7 +21,9 @@ public class scheduleWork {
     private RedisService redisService;
 
     String timeFormat="yyyy-MM-dd HH:mm:ss";
+    String parseTimeFormat = "yyyy-MM-dd HH:mm";
     SimpleDateFormat formatter=new SimpleDateFormat(timeFormat);
+    SimpleDateFormat timeFormatter = new SimpleDateFormat(parseTimeFormat);
 
     private static Long S04StartUpTime = 0L;//,当日开机时间，每天晚上12点清零
     private static Long S04ProcessingTime = 0L;//当日加工时间
@@ -94,6 +96,10 @@ public class scheduleWork {
     private static Long S15HeartBeat = 0L;
     private static Long S15PreHeartBeat = 0L;
     private static Integer S15preStatus = -1;
+
+    private static Long S16HeartBeat = 0L;
+    private static Integer S16preStatus = -1;
+    Date dateStart,dateLastCLose;
 
     private static Long S17HeartBeat = 0L;
     private static Long S17PreHeartBeat = 0L;
@@ -610,6 +616,45 @@ public class scheduleWork {
 
             redisService.lpush("S15PreStatus", array[0] + "|" + formatter.format(new Date()));
             S15preStatus = Integer.parseInt(array[0]);
+        }
+    }
+
+    @Scheduled(cron = "*/1 * * * * ?")
+    // @Async                                  //异步执行需上述数据具有原子性，且若是所有函数能一秒内完成则无意义，暂定不需要异步执行。
+    public void ComputeS16Data(){
+        String str=redisService.lindex("S16",0);
+        String[] array = str.split("\\|");
+
+        Long len = redisService.llen("S16PreStatus");
+        if(!S16preStatus.equals(Integer.parseInt(array[11]))) {
+            while (len >= 20) {
+                redisService.rpop("S16PreStatus");
+                len--;
+            }
+
+            redisService.lpush("S16PreStatus", array[11] + "|" + formatter.format(new Date()));
+            S16preStatus = Integer.parseInt(array[11]);
+        }
+        try {
+            if(!(array[1]==null||array[1].isEmpty())&&!(array[2]==null||array[2].isEmpty())) {
+                dateStart = timeFormatter.parse(array[1] + " " + array[2]);
+            }else{
+                dateStart = new Date();
+            }
+            if(!(array[5]==null||array[5].isEmpty())&&!(array[6]==null||array[6].isEmpty()))
+                dateLastCLose = timeFormatter.parse(array[5] + " " + array[6]);
+            else{
+                dateLastCLose = dateStart;
+            }
+
+            if(dateStart.compareTo(dateLastCLose)>=0){
+                S16HeartBeat = 1L;
+            }else{
+                S16HeartBeat = 0L;
+            }
+            redisService.set("S16HeartBeat",S16HeartBeat.toString());
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

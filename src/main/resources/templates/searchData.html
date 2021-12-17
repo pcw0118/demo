@@ -1,0 +1,453 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+<meta name='apple-mobile-web-app-capable' content='yes'>
+<meta name='apple-mobile-web-app-status-bar-style' content='black'>
+<meta name='format-detection' content='telephone=no'>
+<!--meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"--><!--use edge and chorme frame-->
+<!--meta name="viewport" content="width=device-width, initial-scale=1.0"-->
+<!--<link href="/css/style.css"  rel="stylesheet" type="text/css" media="all" />-->
+<link href="/layui/layui/css/layui.css"  rel="stylesheet" type="text/css" media="all" />
+<title>Document</title>
+<style>
+    .layui-input{color:#00FFFF;}
+    input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: #00FFFF;
+    }
+    input:-moz-placeholder, textarea:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: #00FFFF;
+    }
+    input::-moz-placeholder, textarea::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: #00FFFF;
+    }
+    input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: #00FFFF;
+    }
+    .layui-elem-quote {
+        margin-bottom: 10px;
+        padding: 15px;
+        line-height: 1.6;
+        border-radius: 0 2px 2px 0;
+        background-color: #FFFFFF;
+    }
+    input.layui-input.layui-unselect {
+        border: 1px solid #D9D9D9;opacity: 1;border-radius: 2px;
+        wodth:100%;
+        color:#00FFFF;
+    }
+    option{
+       background-color: #FFFFFF;
+    }
+    select{
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+        font-family:Microsoft YaHei;
+        outline:none;
+        background-color: #7AB2FF;
+        border: 2px solid #00FFFF;
+        opacity: 0.7;
+        border-radius: 1px;
+        /*隐藏select的下拉图标*/
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        /*!*通过padding-left的值让文字居中*!
+        padding-left: 20px;*/
+    }
+    select:focus select:checked{
+        color: #00FFFF;
+        background-image: linear-gradient(180deg, #7AB2FF 0%, #3B5D8E 47%, rgba(61, 89, 128, 0.34) 100%);
+    }
+</style>
+<body style="background-color: #1A262FFF;">
+<div class="layui-collapse" lay-accordion>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title layui-icon" style="background-color: #1A262FFF;color:#00FFFF;height:10%;border:none;border-bottom:1px;">查看曲线  &#xe62c;</h2>
+        <div class="layui-colla-content layui-show" style="height:90%;">
+            <div style="width: 100%;height: 45%;">
+                <div style="height: 5%;">
+                    <select style="color: #00FFFF;font-family: PingFangSC-Regular;">
+                        <option value=""></option>
+                        <option value="0">Y轴：电能消耗</option>
+                        <option value="1">Y轴：利用率</option>
+                    </select>
+                </div>
+                <div id="charts1" style="width:90%;height: 90%;"></div>
+            </div>
+            <div style="width: 100%;height: 45%;">
+                <div style="height: 5%;">
+                    <select style="color: #00FFFF;font-family: PingFangSC-Regular;">
+                        <option value=""></option>
+                        <option value="0">Y轴：电能消耗</option>
+                        <option value="1">Y轴：利用率</option>
+                    </select>
+                </div>
+                <div id="charts2" style="width:90%;height: 90%;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title layui-icon" style="background-color: #1A262FFF;color:#00FFFF;height:10%;">查看表格  &#xe62d;</h2>
+        <div class="layui-colla-content layui-show" style="height:90%;">
+                <form class="layui-form" id="queryData" style="background-color: #1A262FFF;opacity: 1;height:10%;">
+                    <div style="background: #1A262FFF;opacity: 1;">
+                        <div class="layui-inline" style="width:70%;">
+                            <div class="layui-inline" style="width:30%;float: left;">
+                                <label class="layui-form-label" style="text-align: left;color:#00FFFF;">公司：</label>
+                                <div class="layui-input-block" style="border: 1px solid #D9D9D9;opacity: 1;border-radius: 2px;background: #1A262FFF;">
+                                    <select name="city" lay-verify="required">
+                                        <option value=""></option>
+                                        <option value="0">杭萧钢构股份有限公司</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline" style="width:30%;">
+                                <label class="layui-form-label" style="color:#00FFFF;">产线：</label>
+                                <div class="layui-input-block" style="border: 1px solid #D9D9D9;opacity: 1;border-radius: 2px;">
+                                    <select name="city" lay-verify="required" lay-search>
+                                        <option value=""></option>
+                                        <option value="0">智能工厂H型钢产线1#</option>
+                                        <option value="1">智能工厂H型钢产线2#</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline" style="width:30%;">
+                                <label class="layui-form-label" style="color:#00FFFF;">设备名称：</label>
+                                <div class="layui-input-block">
+                                    <select name="city" lay-verify="required" lay-search>
+                                        <option value=""></option>
+                                        <option value="0">火焰切割机1#</option>
+                                        <option value="1">火焰切割机2#</option>
+                                        <option value="2">火焰切割机3#</option>
+                                        <option value="3">上料工位</option>
+                                        <option value="4">H型钢组立工位</option>
+                                        <option value="5">进料缓存工位</option>
+                                        <option value="6">龙门气保焊专机1#</option>
+                                        <option value="7">环链式翻转机1#</option>
+                                        <option value="8">龙门气保焊专机2#</option>
+                                        <option value="9">龙门埋弧焊专机1#</option>
+                                        <option value="10">环链式翻转机2#</option>
+                                        <option value="11">龙门埋弧焊专机2#</option>
+                                        <option value="12">出料缓存工位</option>
+                                        <option value="13">卧式矫正机</option>
+                                        <option value="14">数控型钢钻孔机</option>
+                                        <option value="15">机器人型钢切割机</option>
+                                        <option value="16">抛丸线</option>
+                                        <option value="17">喷涂烘干设备</option>
+                                        <option value="18"></option>
+                                        <option value="19">等离子激光切割机</option>
+                                        <option value="20">龙门激光切割机</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline" style="width:30%;float: left;">
+                                <label class="layui-form-label" style="text-align: left;color:#00FFFF;">工件型号：</label>
+                                <div class="layui-input-block">
+                                    <select name="city" lay-verify="required" lay-search>
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline" style="width:65%;">
+                                <div class="layui-inline" style="float:right;">
+                                    <label class="layui-form-label" style="color:#00FFFF;">日期：</label>
+                                    <div class="layui-inline" id="test-range">
+                                        <div class="layui-input-inline" style="width:40%;">
+                                            <input type="text" id="startDate" class="layui-input layui-icon" placeholder="开始日期     &#xe637;" style="font-size: inherit">
+                                        </div>
+                                        <div class="layui-form-mid" style="color:#FFFFFF">-</div>
+                                        <div class="layui-input-inline" style="width:40%;">
+                                            <input type="text" id="endDate" class="layui-input layui-icon" placeholder="结束日期    &#xe637;" style="font-size: inherit">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-inline" style="width:20%;float:right;">
+                            <button type="reset" class="layui-btn">重置</button>
+                            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="search" id="query" style="color:#000000;background: #FFFFFF;">查询 <i class="layui-icon layui-icon-search"></i></button>
+                        </div>
+                        <!--公司：
+                        <div class="layui-inline">
+                            <input class="layui-input" name="company" id="company" autocomplete="off">
+                        </div>
+                        产线：
+                        <div class="layui-inline">
+                            <input class="layui-input" name="produceLine" id="produceLine" autocomplete="off">
+                        </div>
+                        设备名称：
+                        <div class="layui-inline">
+                            <input class="layui-input" name="deviceName" id="deviceName" autocomplete="off">
+                        </div>
+                        工件型号：
+                        <div class="layui-inline">
+                            <input class="layui-input" name="deviceCode" id="deviceCode" autocomplete="off">
+                        </div>
+                        日期：
+                        <div class="layui-inline">
+                            <input class="layui-input" id="beginTime" type="text" name="beginTime" autocomplete="off">
+                        </div>
+                        &#45;&#45;
+                        <div class="layui-inline">
+                            <input class="layui-input" id="endTime" type="text" name="endTime" autocomplete="off">
+                        </div>
+                        <input type="hidden" name="queryFlag" id="queryFlag" value="true"/>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        <button class="layui-btn" lay-submit lay-filter="search" id="query">查询</button>-->
+                    </div>
+                </form>
+            <table id="demo" lay-filter="test" style="height:90%;"></table>
+        </div>
+    </div>
+</div>
+<script src="/layui/layui/layui.js"></script>
+<script src="/js/jquery-3.6.0.min.js"></script>
+<script>
+    layui.config({
+        base:'/js/'
+    }).use(['layer', 'form','laydate','table','jquery','echarts'], function(){
+        var layer = layui.layer
+            ,form = layui.form,
+        laydate = layui.laydate,
+        table = layui.table,
+            echarts = layui.echarts,
+        $ = layui.$;
+
+        let clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+        let clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+        var chartsBox = document.getElementById("charts1");
+        chartsBox.style.width = parseInt(clientWidth*0.9).toString()+"px";
+        chartsBox.style.height = parseInt(clientHeight*0.9).toString()+"px";
+
+        var charts1 = echarts.init(document.getElementById("charts1"));
+        var charts2 = echarts.init(document.getElementById("charts2"));
+
+        var optionTemplete =  {
+            title: {
+                text: ''
+            },
+            grid:{
+                left: 0,
+                top :10,
+                bottom: 0,
+                containLabel:true
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    //console.log(params);
+                    return  params[0].name+":"+params[0].value+"Nm³";
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            xAxis: {
+                type: 'category',
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#DCE2E8'
+                    }
+                },
+                axisLabel: {
+                    interval:3,
+                    formatter: function (value) {
+                        return value;
+                    },
+                    rotate:0,
+                    textStyle: {
+                        fontSize: 8,
+                        color: '#f9f9fa'
+                    }
+                },
+                splitLine: {
+                    show: false
+                },
+                data: [1,2,3,4]
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    interval:400/5,
+                    textStyle: {
+                        fontSize: 8,
+                        color: '#f9f9fa',
+                    },
+                    margin:4
+                },
+                min:0,
+                max:400
+            },
+            series: [{
+                name: '',
+                type: 'line',
+                radius: '100%',
+                showSymbol: false,
+                hoverAnimation: false,
+                lineStyle:{
+                    width: 1,
+                    color: '#00FFFF'
+                },
+                smooth: true,
+                //itemStyle : { normal: {label : {show: true}}},
+                data: [100,200,300,400]
+            }]
+        };
+
+        var optionTemplete1 =  {
+            title: {
+                text: ''
+            },
+            grid:{
+                left: 0,
+                top :10,
+                bottom: 0,
+                containLabel:true
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    //console.log(params);
+                    return  params[0].name+":"+params[0].value+"Nm³";
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            xAxis: {
+                type: 'category',
+                axisTick: {
+                    show: false
+                },
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#DCE2E8'
+                    }
+                },
+                axisLabel: {
+                    interval:3,
+                    formatter: function (value) {
+                        return value;
+                    },
+                    rotate:0,
+                    textStyle: {
+                        fontSize: 8,
+                        color: '#f9f9fa'
+                    }
+                },
+                splitLine: {
+                    show: false
+                },
+                data: [1,2,3,4]
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    interval:400/5,
+                    textStyle: {
+                        fontSize: 8,
+                        color: '#f9f9fa',
+                    },
+                    margin:4
+                },
+                min:0,
+                max:400
+            },
+            series: [{
+                name: '',
+                type: 'line',
+                radius: '100%',
+                showSymbol: false,
+                hoverAnimation: false,
+                lineStyle:{
+                    width: 1,
+                    color: '#00FFFF'
+                },
+                smooth: true,
+                //itemStyle : { normal: {label : {show: true}}},
+                data: [100,200,300,400]
+            }]
+        };
+
+        charts1.setOption(optionTemplete);
+        charts2.setOption(optionTemplete1);
+        var token = localStorage.getItem("token");
+
+        layui.form.render('select');
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            ,skin: 'line' //行边框风格,thymeleaf 规则，连续两个[
+            // [
+            // ]
+            // ]必须分行，否则解析错误
+            ,url: '/data/demoData?access_token='+token //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [
+                {field: 'id', title: 'ID', sort: true}
+                ,{field: 'username', title: '用户名'}
+                ,{field: 'sex', title: '性别', sort: true}
+                ,{field: 'city', title: '城市'}
+            ]
+            ],
+            parseData:function(res){
+                return{
+                    "code":0,
+                    "msg":"",
+                    "count":100,
+                    "data":res
+                };
+            },
+            done: function (res, curr, count) {
+                $('thead tr th').css({'opacity':'0.82','color':'#00FFFF','background':'linear-gradient(180deg, #7AB2FF 0%, #3B5D8E 47%, rgba(61, 89, 128, 0.34) 100%)'});
+                $('tbody').css({'opacity':'1','color':'#FFFFFF','background-color':'#1A262FFF'});
+                $('a').css({'opacity':'0.38','background-color':'#7AB2FF'});
+                //$('.layui-table-header').css({'background':'linear-gradient(180deg, #7AB2FF 0%, #3B5D8E 47%, rgba(61, 89, 128, 0.34) 100%)'});
+            }
+        });
+
+
+        laydate.render({
+            elem: '#test-range' //开始时间和结束时间所在 input 框的父选择器
+            //设置开始日期、日期日期的 input 选择器
+            ,range: ['#startDate', '#endDate'], //数组格式为 layui 2.6.6 开始新增
+            type: 'datetime'
+        });
+    });
+</script>
+</body>
+<script>
+    $("input.layui-input.layui-unselect").css("border","1px solid #D9D9D9");
+    $("input.layui-input.layui-unselect").css("opacity","1");
+    $("input.layui-input.layui-unselect").css("border-radius","2px")
+    $("input.layui-input.layui-unselect").css("background","#1A262FFF");
+    var element = $("div.layui-form-select");
+    console.log(element);
+
+   /* $("select").css("border","1px solid #D9D9D9");
+    $("select").css("opacity","1");
+    $("select").css("border-radius","2px")
+    $("select").css("background-color","#1A262FFF");*/
+    $("i.layui-edge").css("color","#00FFFF");
+</script>
+</html>

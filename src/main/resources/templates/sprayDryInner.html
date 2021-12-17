@@ -155,10 +155,11 @@
                             <a href="/index/steelDrillStationInner">杭萧钢构H型钢产线- 数控型钢钻孔机</a>
                             <a href="/index/shootPeenInner">杭萧钢构H型钢产线- 抛丸线</a>
                             <a href="/index/sprayDryInner">杭萧钢构H型钢产线- 喷涂烘干线</a>
+                            <a href="/index/robotCutInner">杭萧钢构H型钢产线- 机器人型钢切割机</a>
                         </div>
                     </div>
                 </div>
-                <img src="/images/assemblystation.png" style="height:calc(70% + 1vw);width:100%;margin-top:-1%;"></img>
+                <img src="/images/sprayDry.png" style="height:calc(70% + 1vw);width:100%;margin-top:-1%;"></img>
                 <!-- <img id="heartbeat" src="./normal.png" style="height:23%;width:60%;padding-top:1%;"></img> -->
                 <div id="heartbeatStatus" style="height: 29%;width:100%; margin-top: -6%;">
                     <!--<div style="width: 10%;height: 65%;margin-left: 11%;display: inline-block;">
@@ -274,6 +275,19 @@
     //switchBar-----------------------------------------------------------------------------------------------------
 
     //------------------------------------------------------------------------------------------------------
+    var token = localStorage.getItem("token");
+    //console.log("switch:"+token);
+    /*$(".option a").each(function(index,element){
+        $(this).attr('href',$(this).attr('href')+"?access_token="+token);
+    });*/
+
+    var as = document.querySelector(".option").getElementsByTagName("a");
+    for(var i=0;i<as.length;i++){
+        var oldUrl = as[i].getAttribute("href");
+        console.log(oldUrl);
+        as[i].setAttribute("href",oldUrl+"?access_token="+token);
+    }
+
     $(".select_txt").text("杭萧钢构H型钢产线- 喷涂烘干线");
 
     $(document).ready(function(){

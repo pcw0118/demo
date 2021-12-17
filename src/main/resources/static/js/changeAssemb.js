@@ -890,12 +890,12 @@ function changeData(data) {
     }
 }
 
-
+var text = localStorage.getItem("token");
 
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S05Data",
+        url:"/data/S05Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeData(result);
@@ -905,7 +905,7 @@ setInterval(function(){
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S05Data",
+        url:"/data/S05Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeHearts(result);

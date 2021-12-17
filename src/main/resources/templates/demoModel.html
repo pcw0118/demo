@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        canvas {
+            display: block;
+        }
+
+    </style>
+</head>
+<body >
+<script type="module">
+    import { RoomEnvironment } from '/js/three.js-master/examples/jsm/environments/RoomEnvironment.js';
+    import { KTX2Loader } from '/js/three.js-master/examples/jsm/loaders/KTX2Loader.js';
+    import { MeshoptDecoder } from '/js/three.js-master/examples/jsm/libs/meshopt_decoder.module.js';
+    import * as THREE from '/js/three.js-master/build/three.module.js';
+    import { GUI } from '/js/three.js-master/examples/jsm/libs/dat.gui.module.js';
+    import { Stats } from '/js/three.js-master/examples/jsm/libs/stats.module.js';
+    import { GLTFLoader } from "/js/three.js-master/examples/jsm/loaders/GLTFLoader.js";
+    import { OrbitControls } from '/js/three.js-master/examples/jsm/controls/OrbitControls.js';
+
+    var renderer, camera, scene, gui, light, stats, controls, meshHelper, mixer, action,datGui;
+
+    const clock = new THREE.Clock();
+
+    draw();
+
+
+    function initRender() {
+        renderer = new THREE.WebGLRenderer({alpha:true,antialias: true});
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        //告诉渲染器需要阴影效果
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        //告诉渲染器需要阴影效果
+        //renderer.shadowMap.enabled = true;
+        //renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 默认的是，没有设置的这个清晰 THREE.PCFShadowMap
+        renderer.setClearColor(0xffffff);
+        document.body.appendChild(renderer.domElement);
+    }
+
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(50, 50, 50);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+    }
+
+
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+
+    function initLight() {
+        scene.add(new THREE.AmbientLight(0x444444));
+
+        light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 200, 100 );
+
+        light.castShadow = true;
+        light.shadow.camera.top = 180;
+        light.shadow.camera.bottom = -100;
+        light.shadow.camera.left = -120;
+        light.shadow.camera.right = 120;
+
+        //告诉平行光需要开启阴影投射
+        light.castShadow = true;
+
+        scene.add(light);
+    }
+
+    function initGui() {
+        //声明一个保存需求修改的相关数据的对象
+        //声明一个保存需求修改的相关数据的对象
+        gui = {
+            helper:true //模型辅助线
+        };
+        datGui = new GUI();
+        //将设置属性添加到gui当中，gui.add(对象，属性，最小值，最大值）
+
+        datGui.add(gui, "helper").onChange(function (e) {
+            meshHelper.visible = e;
+        })
+
+    }
+
+
+
+
+
+    function initModel(){
+        var loader = new GLTFLoader();
+
+        loader.load( '../model/Bee.glb', function ( mesh ) {
+
+            // X轴为红色。 Y轴为绿色。 Z轴为蓝色。
+            var helper = new THREE.AxesHelper(1000)
+            scene.add(helper)
+
+            //AnimationMixer是场景中特定对象的动画播放器。当场景中的多个对象独立动画时，可以为每个对象使用一个AnimationMixer
+            mixer = mesh.mixer = new THREE.AnimationMixer(mesh.scene);
+
+            //mixer.clipAction 返回一个可以控制动画的AnimationAction对象  参数需要一个AnimationClip 对象
+            //AnimationAction.setDuration 设置一个循环所需要的时间，当前设置了一秒
+            //告诉AnimationAction启动该动作
+            //action = mixer.clipAction(mesh.animations[0]);
+            //action.play();
+
+            var actions = []; //所有的动画数组
+            var animations = datGui.addFolder("animations");
+
+            for(var i = 0; i < mesh.animations.length; i ++){
+                createAction(i,actions,animations,mesh);
+            }
+
+            function createAction(i){
+                actions[i] = mixer.clipAction(mesh.animations[i]);
+                gui["action"+i] = function () {
+                    for(var j = 0; j < actions.length; j ++){
+                        if(j === i){
+                            actions[j].play();
+                        }
+                        else{
+                            actions[j].stop();
+                        }
+                    }
+                };
+
+                animations.add(gui, "action"+i);
+            }
+
+            //添加暂停所有动画的按键
+            gui.stop = function(){
+                for(var i = 0; i < actions.length; i ++){
+                    actions[i].stop();
+                }
+            };
+
+
+            datGui.add(gui, "stop");
+            scene.add(mesh.scene)
+
+            //mesh.scene.position.y += 100;
+
+            /*scene.add( gltf.scene );*/
+
+        }, undefined, function ( error ) {
+
+            console.error( error );
+
+        } );
+    }
+
+    //初始化性能插件
+
+    function initStats() {
+        stats = new Stats();
+        document.body.appendChild(stats.dom);
+    }
+
+    //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
+    var controls;
+
+    function initControls() {
+
+        controls = new OrbitControls(camera, renderer.domElement);
+
+        // 如果使用animate方法时，将此函数删除
+        //controls.addEventListener( 'change', render );
+        // 使动画循环使用时阻尼或自转 意思是否有惯性
+        controls.enableDamping = true;
+        //动态阻尼系数 就是鼠标拖拽旋转灵敏度
+        controls.dampingFactor = 0.25;
+        //是否可以缩放
+        controls.enableZoom = true;
+
+        //是否自动旋转
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        //上下旋转的角度范围，相等意味着不可上下转动
+        //controls.minPolarAngle = Math.PI / 4
+        //controls.maxPolarAngle = Math.PI / 4
+        //设置相机距离原点的最远距离
+        controls.minDistance = 0.1;
+        //设置相机距离原点的最远距离
+        controls.maxDistance = 10000;
+        //是否开启右键拖拽
+        controls.enablePan = true;
+    }
+
+
+    function render() {
+        var time = clock.getDelta();
+        if (mixer) {
+            mixer.update(time);
+        }
+
+        controls.update();
+    }
+
+    //窗口变动触发的函数
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        render();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+
+    function animate() {
+        //更新控制器
+        render();
+
+        controls.update();
+
+        //更新性能插件
+        stats.update();
+
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(animate);
+    }
+
+    function draw() {
+        /*initRender();
+        initScene();
+        initCamera();
+        initLight();
+        initModel();
+        initGui();
+        initControls();
+        initStats();
+
+        animate();
+        window.onresize = onWindowResize;*/
+        //if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+        initGui();
+        initRender();
+        initScene();
+        initCamera();
+        initLight();
+        initModel();
+        initControls();
+        initStats();
+
+        animate();
+        window.onresize = onWindowResize;
+    }
+
+
+</script>
+</body>
+<!--<script src="https://cdn.bootcss.com/three.js/91/three.min.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/OBJLoader.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/FBXLoader.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/GLTFLoader.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/loaders/DRACOLoader.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/controls/OrbitControls.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/libs/stats.min.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/libs/dat.gui.min.js"></script>
+<script src="http://www.yanhuangxueyuan.com/threejs/examples/js/libs/inflate.min.js"></script>-->
+<!--<script  src="/js/three.js-master/build/three.js"></script>
+&lt;!&ndash;<script type="module" src="/js/three.js-master/build/three.module.js"></script>&ndash;&gt;
+<script type="module" src="/js/three.js-master/examples/jsm/loaders/FBXLoader.js"></script>
+<script type="module" src="/js/three.js-master/examples/jsm/loaders/OBJLoader.js"></script>
+<script type="module" src="/js/three.js-master/examples/jsm/loaders/FBXLoader.js"></script>
+<script type="module" src="/js/three.js-master/examples/jsm/loaders/GLTFLoader.js"></script>
+<script type="module" src="/js/three.js-master/examples/jsm/loaders/DRACOLoader.js"></script>
+<script src="/js/three.js-master/examples/js/controls/OrbitControls.js"></script>
+<script src="/js/three.js-master/examples/js/libs/stats.min.js"></script>
+<script src="/js/three.js-master/examples/js/libs/dat.gui.min.js"></script>-->
+<!--<script src="/js/three.js-master/examples/js/libs/inflate.min.js"></script>-->
+
+
+</html>

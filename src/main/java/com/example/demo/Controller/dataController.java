@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.DeflaterOutputStream;
 
@@ -20,6 +21,26 @@ public class dataController {
     @Autowired
     private RedisService redisService;
 
+    @GetMapping("/demoData")
+    @ResponseBody
+    public List<DemoData> toDemoData(HttpServletRequest request) {
+        //long l=redisService.llen("S14");
+        //System.out.println("S17 start");
+        List<DemoData> res=new LinkedList<>();
+        int i = 10;
+        while(i-->=0){
+            DemoData tmp = new DemoData();
+            tmp.setId(i);
+            tmp.setSex(1);
+            tmp.setUsername("Bob");
+            tmp.setCity("New York");
+            res.add(tmp);
+        }
+
+        //System.out.println("S17 end");
+        return res;
+
+    }
 
     @GetMapping("/S04Data")
     @ResponseBody
@@ -622,6 +643,67 @@ public class dataController {
         return res;
 
     }
+
+
+    @GetMapping("/S16Data")
+    @ResponseBody
+    public S16Data toS16Data(HttpServletRequest request) {
+        //long l=redisService.llen("S14");
+        S16Data res=new S16Data();
+        String str=redisService.lindex("S16",0);
+        //System.out.println(str);
+        String[] array = str.split("\\|");
+
+
+        String HeartBeat = redisService.get("S16HeartBeat");
+        res.setHeartBeat(Long.parseLong(HeartBeat));
+
+
+        List<String> ret = redisService.lrange("S16PreStatus",0,19);
+        res.setPreStatus(ret);
+
+        res.setCumulateRunTime(Integer.parseInt(array[0]));
+        res.setSystemStartDate(array[1]);
+        res.setSystemStartTime(array[2]);
+        res.setSystemPreCloseDate(array[3]);
+        res.setSystemPreCloseTime(array[4]);
+        res.setSystemLastCloseDate(array[5]);
+        res.setSystemLastCloseTime(array[6]);
+        res.setCurrentDate(array[7]);
+        res.setDailyRunTime(Double.parseDouble(array[8]));
+        res.setDailyStandbyTime(Double.parseDouble(array[9]));
+        res.setDailyFailureTime(Double.parseDouble(array[10]));
+        res.setCurrentStatus(Integer.parseInt(array[11]));
+        res.setFailureCode(array[12]);
+        res.setFailureInfo(array[13]);
+        res.setAlarmInfo(array[14]);
+        res.setPlasmaState(array[15]);
+        res.setPlasmaAlarmCode(array[16]);
+        res.setPlasmaAlarmTime(array[17]);
+        res.setTodayBaseMetalNum(Integer.parseInt(array[18]));
+        res.setTodayPartNum(Integer.parseInt(array[19]));
+        res.setRunningProgram(array[20]);
+        res.setCurrentRunTask(Integer.parseInt(array[21]));
+        res.setCurrentTaskNum(Integer.parseInt(array[22]));
+        res.setCurentProgramSpec(array[23]);
+        res.setMonthlyBaseMetalNum(Integer.parseInt(array[24]));
+        res.setMonthlyPartNum(Integer.parseInt(array[25]));
+        res.setYearlyBaseMetalNum(Integer.parseInt(array[26]));
+        res.setYearlyPartNum(Integer.parseInt(array[27]));
+        String[] array1 = array[28].split("_");
+        res.setVulnerPartUpDate(array1[0]);
+        res.setVulnerPartUpTime(array1[1]);
+        res.setElecCuttingDis(Integer.parseInt(array[29]));
+        res.setElecPerfTimes(Integer.parseInt(array[30]));
+        res.setElecDailyUpdate(Integer.parseInt(array[31]));
+        res.setElecMonthlyUpdate(Integer.parseInt(array[32]));
+        res.setElecYearlyUpdate(Integer.parseInt(array[33]));
+
+
+        return res;
+
+    }
+
 
     @GetMapping("/S17Data")
     @ResponseBody

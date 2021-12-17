@@ -102,6 +102,18 @@ public class baseController {
     @GetMapping("/sprayDryInner")
     public String tosprayDryInnerPage(HttpServletRequest request) {return "sprayDryInner";}
 
+    @GetMapping("/threeModel")
+    public String tothreeModelPage(HttpServletRequest request) {return "demoModel";}
+
+    @GetMapping("/threeModelTemp")
+    public String tothreeModelTempPage(HttpServletRequest request) {return "demoModelTemp";}
+
+    @GetMapping("/selectData")
+    public String toSelectDataPage(HttpServletRequest request) {return "searchData";}
+
+    @GetMapping("/robotCutInner")
+    public String torobotCutPage(HttpServletRequest request) {return "robotCutMacInner";}
+
 
     @GetMapping("/data")
     @ResponseBody

@@ -440,12 +440,12 @@ function changeTopcoatSprayData(data) {
 
 
 
-
+var text = localStorage.getItem("token");
 
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S18Data",
+        url:"/data/S18Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeLH(result);
@@ -457,7 +457,7 @@ var sprayInt,dryInt;
 
 sprayInt = setInterval(function(){
     $.ajax({
-        url:"/data/S18Data",
+        url:"/data/S18Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changePrimerSprayData(result);
@@ -466,7 +466,7 @@ sprayInt = setInterval(function(){
 
 dryInt = setInterval(function(){
     $.ajax({
-        url:"/data/S18Data",
+        url:"/data/S18Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changePrimerDryData(result);
@@ -486,7 +486,7 @@ $('#switchbar').click( function() {
         clearInterval(dryInt);
         dryInt = setInterval(function(){
             $.ajax({
-                url:"/data/S18Data",
+                url:"/data/S18Data?access_token="+text,
                 type:"GET",
                 success:(result)=>{
                     changeTopcoatDryData(result);
@@ -500,7 +500,7 @@ $('#switchbar').click( function() {
         clearInterval(dryInt);
         dryInt = setInterval(function(){
             $.ajax({
-                url:"/data/S18Data",
+                url:"/data/S18Data?access_token="+text,
                 type:"GET",
                 success:(result)=>{
                     changePrimerDryData(result);
@@ -517,7 +517,7 @@ $('#switchbar2').click( function() {
         clearInterval(sprayInt);
         sprayInt = setInterval(function(){
             $.ajax({
-                url:"/data/S18Data",
+                url:"/data/S18Data?access_token="+text,
                 type:"GET",
                 success:(result)=>{
                     changeTopcoatSprayData(result);
@@ -530,7 +530,7 @@ $('#switchbar2').click( function() {
         clearInterval(sprayInt);
         sprayInt = setInterval(function(){
             $.ajax({
-                url:"/data/S18Data",
+                url:"/data/S18Data?access_token="+text,
                 type:"GET",
                 success:(result)=>{
                     changePrimerSprayData(result);
@@ -541,7 +541,7 @@ $('#switchbar2').click( function() {
 
 setInterval(function(){
     $.ajax({
-        url:"/data/S18Data",
+        url:"/data/S18Data?access_token="+text,
         type:"GET",
         success:(result)=>{
             changeHearts(result);

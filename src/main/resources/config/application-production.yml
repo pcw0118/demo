@@ -2,7 +2,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/hxzz_db
+    url: jdbc:postgresql://10.168.1.102:20008/hxzz_db
     username: hxzz
     password: abc123
     hikari:
@@ -14,11 +14,15 @@ spring:
       connection-test-query: select 'x'
       pool-name: prod
       password: abc123
-      jdbc-url: jdbc:postgresql://localhost:5432/hxzz_db
+      jdbc-url: jdbc:postgresql://10.168.1.102:20008/hxzz_db
 
   redis:
     host: localhost
     database: 0
     port: 6379
     password: abc123
+  jwt:
+    secret: mySecret
+    expire: 3600
+    authorization: access-token
   profiles: production

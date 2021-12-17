@@ -330,9 +330,11 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 		}
 	}
 
+	var text = localStorage.getItem("token");
+
 	setInterval(function(){
 		$.ajax({
-		url:"/data/S14Data",
+		url:"/data/S14Data?access_token="+text,
 		type:"GET",
 		success:(result)=>{
 			changeData(result);
@@ -341,7 +343,7 @@ MaxCount=Math.trunc(newHeight/lineHeight);
 
 	setInterval(function(){
 		$.ajax({
-			url:"/data/S14Data",
+			url:"/data/S14Data?access_token="+text,
 			type:"GET",
 			success:(result)=>{
 				changeHearts(result);

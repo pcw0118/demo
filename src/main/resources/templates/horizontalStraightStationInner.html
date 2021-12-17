@@ -177,6 +177,7 @@
 							<a href="/index/steelDrillStationInner">杭萧钢构H型钢产线- 数控型钢钻孔机</a>
 							<a href="/index/shootPeenInner">杭萧钢构H型钢产线- 抛丸线</a>
 							<a href="/index/sprayDryInner">杭萧钢构H型钢产线- 喷涂烘干线</a>
+							<a href="/index/robotCutInner">杭萧钢构H型钢产线- 机器人型钢切割机</a>
 						</div>
 					</div>
 				</div>
@@ -354,6 +355,19 @@
 </body>
 <script>
 	//------------------------------------------------------------------------------------------------------
+	var token = localStorage.getItem("token");
+	//console.log("switch:"+token);
+	/*$(".option a").each(function(index,element){
+        $(this).attr('href',$(this).attr('href')+"?access_token="+token);
+    });*/
+
+	var as = document.querySelector(".option").getElementsByTagName("a");
+	for(var i=0;i<as.length;i++){
+		var oldUrl = as[i].getAttribute("href");
+		console.log(oldUrl);
+		as[i].setAttribute("href",oldUrl+"?access_token="+token);
+	}
+
 	$(".select_txt").text("杭萧钢构H型钢产线- 卧式矫正机工位");
 
 	$(document).ready(function(){

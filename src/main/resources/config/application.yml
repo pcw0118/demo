@@ -12,7 +12,7 @@ logging:
 debug: false
 spring:
   profiles:
-    active: dashengda
+    active: test
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_empty
